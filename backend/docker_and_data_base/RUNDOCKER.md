@@ -25,7 +25,8 @@ docker exec -it postgres-iot psql -U postgres -d iot
 
 3.1 Para salir:
 ```
-quit
+\q
+
 ```
 
 3. Alternativamente se puede contectar mediante DataGrip, PgAdmin, Debeaver, etc
