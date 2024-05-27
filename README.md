@@ -1,9 +1,12 @@
-SmartPark - Documentación
+# SmartPark - Documentación
+
 Este repositorio contiene el código fuente y la documentación para el proyecto SmartPark, una aplicación de gestión de estacionamiento inteligente.
 
-Configuración de la Base de Datos
+## Configuración de la Base de Datos
+
 Para ejecutar la base de datos en un contenedor Docker, utiliza el siguiente comando:
 
+```bash
 docker run -d --name smartpark_c -e POSTGRES_PASSWORD=12345 -e POSTGRES_USER=admin -e POSTGRES_DB=smartpark_db -p 5432:5432 postgres:15.3
 
 
@@ -62,6 +65,3 @@ Ejemplo: MySQLDatabase.java
 Services: Componentes con funcionalidades específicas.
 
 Ejemplo: AuthService.java
-Este README proporciona una visión general de la estructura del proyecto y cómo se organiza tanto en el frontend como en el backend.
-
-¡Bienvenido a contribuir al proyecto SmartPark! Si tienes alguna pregunta o sugerencia, no dudes en abrir un problema o enviar una solicitud de extracción.
