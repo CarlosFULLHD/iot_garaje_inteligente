@@ -1,3 +1,53 @@
+<style>
+/* Colores */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+}
+
+/* Títulos */
+h1 {
+  color: var(--primary-color);
+}
+
+h2 {
+  color: var(--secondary-color);
+}
+
+/* Código */
+code {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+/* Listas */
+ul {
+  list-style-type: none;
+}
+
+ul li::before {
+  content: "•";
+  color: var(--primary-color);
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+/* Enlaces */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+</style>
+
 # SmartPark - Documentación
 
 ![SmartPark Logo](link_to_logo_image)
@@ -14,58 +64,65 @@ Para ejecutar la base de datos en un contenedor Docker, utiliza el siguiente com
 docker run -d --name smartpark_c -e POSTGRES_PASSWORD=12345 -e POSTGRES_USER=admin -e POSTGRES_DB=smartpark_db -p 5432:5432 postgres:15.3
 
 
-Versiones Utilizadas
-Flutter: 3.19.6
-PostgreSQL: 15.3
-Java SDK: 20
-Estructura del Frontend
+
+# Versiones Utilizadas
+- **Flutter**: 3.19.6
+- **PostgreSQL**: 15.3
+- **Java SDK**: 20
+
+---
+
+# Estructura del Frontend
+
 La arquitectura Provider en Flutter es una manera eficiente de gestionar el estado y la inyección de dependencias en una aplicación. Aquí está cómo se organiza la estructura del proyecto:
 
-Config: Configuración de Rutas.
+- **Config**: Configuración de Rutas.
+  - *Ejemplo*: `routes.dart`
 
-Ejemplo: routes.dart
-Models: Modelos de datos.
+- **Models**: Modelos de datos.
+  - *Ejemplo*: `user_model.dart`
 
-Ejemplo: user_model.dart
-Providers: Gestión del estado.
+- **Providers**: Gestión del estado.
+  - *Ejemplo*: `user_provider.dart`
 
-Ejemplo: user_provider.dart
-Styles: Definición de estilos.
+- **Styles**: Definición de estilos.
+  - *Ejemplo*: `theme.dart`
 
-Ejemplo: theme.dart
-Services: Servicios de la aplicación.
+- **Services**: Servicios de la aplicación.
+  - *Ejemplo*: `api_service.dart`
 
-Ejemplo: api_service.dart
-Utils: Utilidades y constantes globales.
+- **Utils**: Utilidades y constantes globales.
+  - *Ejemplo*: `constants.dart`
 
-Ejemplo: constants.dart
-Views: Vistas de la aplicación.
+- **Views**: Vistas de la aplicación.
+  - *Ejemplo*: `home_screen.dart`
 
-Ejemplo: home_screen.dart
-Widgets: Componentes reutilizables.
+- **Widgets**: Componentes reutilizables.
+  - *Ejemplo*: `custom_button.dart`
 
-Ejemplo: custom_button.dart
-Estructura del Backend
+---
+
+# Estructura del Backend
+
 La estructura del backend sigue los principios de una arquitectura limpia y escalable:
 
-Entity: Representación de los objetos del mundo real.
+- **Entity**: Representación de los objetos del mundo real.
+  - *Ejemplo*: `UserEntity.java`
 
-Ejemplo: UserEntity.java
-Repository: Abstracción del acceso a los datos.
+- **Repository**: Abstracción del acceso a los datos.
+  - *Ejemplo*: `UserRepository.java`
 
-Ejemplo: UserRepository.java
-Controller: Gestión de solicitudes HTTP.
+- **Controller**: Gestión de solicitudes HTTP.
+  - *Ejemplo*: `UserController.java`
 
-Ejemplo: UserController.java
-DTO: Transferencia de datos entre capas.
+- **DTO**: Transferencia de datos entre capas.
+  - *Ejemplo*: `UserDTO.java`
 
-Ejemplo: UserDTO.java
-BL: Lógica de negocio de la aplicación.
+- **BL**: Lógica de negocio de la aplicación.
+  - *Ejemplo*: `OrderLogic.java`
 
-Ejemplo: OrderLogic.java
-BD: Sistema de almacenamiento principal.
+- **BD**: Sistema de almacenamiento principal.
+  - *Ejemplo*: `MySQLDatabase.java`
 
-Ejemplo: MySQLDatabase.java
-Services: Componentes con funcionalidades específicas.
-
-Ejemplo: AuthService.java
+- **Services**: Componentes con funcionalidades específicas.
+  - *Ejemplo*: `AuthService.java`
