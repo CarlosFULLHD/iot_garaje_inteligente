@@ -1,53 +1,3 @@
-<style>
-/* Colores */
-:root {
-  --primary-color: #007bff;
-  --secondary-color: #6c757d;
-  --success-color: #28a745;
-  --warning-color: #ffc107;
-  --danger-color: #dc3545;
-}
-
-/* Títulos */
-h1 {
-  color: var(--primary-color);
-}
-
-h2 {
-  color: var(--secondary-color);
-}
-
-/* Código */
-code {
-  background-color: #f8f9fa;
-  border-radius: 4px;
-  padding: 2px 4px;
-}
-
-/* Listas */
-ul {
-  list-style-type: none;
-}
-
-ul li::before {
-  content: "•";
-  color: var(--primary-color);
-  display: inline-block;
-  width: 1em;
-  margin-left: -1em;
-}
-
-/* Enlaces */
-a {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-</style>
-
 # SmartPark - Documentación
 
 ![SmartPark Logo](link_to_logo_image)
@@ -62,8 +12,6 @@ Para ejecutar la base de datos en un contenedor Docker, utiliza el siguiente com
 
 ```bash
 docker run -d --name smartpark_c -e POSTGRES_PASSWORD=12345 -e POSTGRES_USER=admin -e POSTGRES_DB=smartpark_db -p 5432:5432 postgres:15.3
-
-
 
 # Versiones Utilizadas
 - **Flutter**: 3.19.6
