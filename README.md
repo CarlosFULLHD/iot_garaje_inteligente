@@ -1,6 +1,10 @@
 # SmartPark - Documentación
 
+![SmartPark Logo](link_to_logo_image)
+
 Este repositorio contiene el código fuente y la documentación para el proyecto SmartPark, una aplicación de gestión de estacionamiento inteligente.
+
+---
 
 ## Configuración de la Base de Datos
 
