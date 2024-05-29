@@ -1,11 +1,8 @@
-// lib/main.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smartpark/config/app_routes.dart';
+import 'package:smartpark/config/app_routes.dart'; // Asegúrate de que la ruta es correcta
 import 'package:smartpark/style/colors.dart';
-
-import 'providers/auth_provider.dart';
+import 'package:smartpark/providers/auth_provider.dart';
 
 import 'utils/constants.dart';
 
@@ -24,7 +21,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: AppColors.primaryColor,
         ),
         onGenerateRoute: AppRoutes.generateRoute,
-        initialRoute: '/',
+        initialRoute: '/',  // Aquí se establece la pantalla inicial
       ),
     );
   }

@@ -1,30 +1,42 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:smartpark/main.dart';
+import 'package:smartpark/views/login.dart';
+import 'package:smartpark/views/signup.dart';
+import 'package:smartpark/views/welcome_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Welcome screen displays correctly', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that WelcomeScreen shows "Welcome".
+    expect(find.text('Welcome'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify that the Login and Sign up buttons are present.
+    expect(find.text('Login'), findsOneWidget);
+    expect(find.text('Sign up'), findsOneWidget);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('Navigates to Login screen', (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp());
+
+    // Tap the Login button and trigger a frame.
+    await tester.tap(find.text('Login'));
+    await tester.pumpAndSettle(); // Wait for navigation animation to complete
+
+    // Verify that we are on the Login screen.
+    expect(find.byType(LoginPage), findsOneWidget);
+  });
+
+  testWidgets('Navigates to Sign up screen', (WidgetTester tester) async {
+    await tester.pumpWidget(MyApp());
+
+    // Tap the Sign up button and trigger a frame.
+    await tester.tap(find.text('Sign up'));
+    await tester.pumpAndSettle(); // Wait for navigation animation to complete
+
+    // Verify that we are on the Sign up screen.
+    expect(find.byType(SignupPage), findsOneWidget);
   });
 }
