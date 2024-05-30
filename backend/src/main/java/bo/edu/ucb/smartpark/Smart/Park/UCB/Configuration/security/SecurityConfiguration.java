@@ -57,15 +57,6 @@ public class SecurityConfiguration {
                 .build();
     }
 
-//    @Bean
-//    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationProvider authenticationProvider) throws Exception {
-//        return httpSecurity
-//                .csrf(csrf -> csrf.disable())
-//                .httpBasic(Customizer.withDefaults())
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .addFilterBefore(new JwtRequestFilter(jwtUtils), BasicAuthenticationFilter.class)
-//                .build();
-//    }
 
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

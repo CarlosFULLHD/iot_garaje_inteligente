@@ -94,4 +94,5 @@ public class UserDetailServiceImpl implements UserDetailsService {
         LOG.info("Authentication principal type: {}", authentication.getPrincipal().getClass());
         return authentication;
     }
+
 }
