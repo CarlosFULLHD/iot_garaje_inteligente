@@ -79,10 +79,10 @@ INSERT INTO roles (user_role, description, status, created_at) VALUES
 ('USER', 'User role', 1, CURRENT_TIMESTAMP);
 
 INSERT INTO users (name, last_name, email, password, pin_code, created_at, updated_at) VALUES
-('Carlos', 'Nina', 'carlos.nina@ucb.edu.bo', 'password_hash1', '1234', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Maria', 'Lopez', 'maria.lopez@ucb.edu.bo', 'password_hash2', '5678', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Juan', 'Perez', 'juan.perez@ucb.edu.bo', 'password_hash3', '9012', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Ana', 'Torres', 'ana.torres@ucb.edu.bo', 'password_hash4', '3456', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('Carlos', 'Nina', 'carlos.nina@ucb.edu.bo', '$2a$10$J5Y5dnEtOFprF/axBPYoFOTDkjjBsnyCVsXnNjaOMRjNDEvIwTshS', '1234', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Maria', 'Lopez', 'maria.lopez@ucb.edu.bo', '$2a$10$J5Y5dnEtOFprF/axBPYoFOTDkjjBsnyCVsXnNjaOMRjNDEvIwTshS', '5678', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Juan', 'Perez', 'juan.perez@ucb.edu.bo', '$2a$10$J5Y5dnEtOFprF/axBPYoFOTDkjjBsnyCVsXnNjaOMRjNDEvIwTshS', '9012', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Ana', 'Torres', 'ana.torres@ucb.edu.bo', '$2a$10$J5Y5dnEtOFprF/axBPYoFOTDkjjBsnyCVsXnNjaOMRjNDEvIwTshS', '3456', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO roles_has_users (roles_id_role, users_id_users, status, created_at) VALUES
 (1, 1, 1, CURRENT_TIMESTAMP),  -- Carlos Nina as ADMIN
