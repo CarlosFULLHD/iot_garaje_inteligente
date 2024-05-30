@@ -14,22 +14,16 @@ Content-Type: application/json
 
 ### Login:
 
-POST /api/v1/users/login HTTP/1.1
-Host: localhost:8080
+POST http://localhost:8080/api/v1/users/login
 Content-Type: application/json
 
 {
-  "username": "carlos.nina11@ucb.edu.bo",
+  "username": "carlos.nina@ucb.edu.bo",
   "password": "12345678"
 }
 
-### Repuesta: 200 OK
 
-{
-  "username": "carlos.nina11@ucb.edu.bo",
-  "message": "Usuario autenticado exitosamente",
-  "status": true,
-  "jwt": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjYXJsb3MubmluYTExQHVjYi5lZHUuYm8iLCJyb2xlIjpudWxsLCJuYmYiOjE3MTcwODg3OTIsIm5hbWUiOiJDYXJsb3MgRGFuaWVsIE5pbmEgUmV5bmFnYSIsImlzcyI6IkpXVC1JT1RfR0FSQUpFIiwiZXhwIjoxNzE3MDkwNTkyLCJ1c2VySWQiOjYsImlhdCI6MTcxNzA4ODc5MiwiYXV0aG9yaXRpZXMiOiIiLCJqdGkiOiIyODMyN2FmOS0xMzJhLTQwMzQtYjk5OC03MzA0M2QzYjBmOGEifQ.KcWalGxwbQgyKGYeP4FCGzKcNNo-J3TLcRGMpJWwY54"
-}
+### otorgar rol admin
+POST http://localhost:8080/api/v1/users/assign-admin-role?email=carlos.nina11@ucb.edu.bo
+Content-Type: application/json
 
-###

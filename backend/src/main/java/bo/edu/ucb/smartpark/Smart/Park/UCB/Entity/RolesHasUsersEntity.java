@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Getter
+@Setter
 @Table(name = "roles_has_users")
 public class RolesHasUsersEntity {
     @Id

@@ -46,5 +46,12 @@ public class UsersApi {
         AuthResponse authResponse = userDetailServiceImpl.loginUser(request, response);
         return ResponseEntity.ok(authResponse);
     }
+    @PostMapping("/assign-admin-role")
+    public ResponseEntity<Object> assignAdminRole(@RequestParam String email) {
+        LOG.info("Asignando rol ADMIN al usuario con email: {}", email);
+        Object response = usersBl.assignAdminRole(email);
+        return ResponseEntity.status(response instanceof SuccessfulResponse ? HttpStatus.OK : HttpStatus.BAD_REQUEST).body(response);
+    }
+
 
 }

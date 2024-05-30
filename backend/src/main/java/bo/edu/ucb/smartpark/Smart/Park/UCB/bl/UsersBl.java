@@ -2,8 +2,12 @@ package bo.edu.ucb.smartpark.Smart.Park.UCB.bl;
 
 import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.UserEntity;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.VehicleEntity;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.RolesHasUsersEntity;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.RoleEntity;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.UserDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.VehiclesDao;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.RolesDao;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.RolesHasUsersDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.UnsuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.RegisterUserRequest;
@@ -15,18 +19,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class UsersBl {
 
     private final UserDao userDao;
     private final VehiclesDao vehiclesDao;
+    private final RolesDao rolesDao;
+    private final RolesHasUsersDao rolesHasUsersDao;
     private final PasswordEncoder passwordEncoder;
     private static final Logger LOG = LoggerFactory.getLogger(UsersBl.class);
 
-    public UsersBl(UserDao userDao, VehiclesDao vehiclesDao, PasswordEncoder passwordEncoder) {
+    public UsersBl(UserDao userDao, VehiclesDao vehiclesDao, RolesDao rolesDao, RolesHasUsersDao rolesHasUsersDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.vehiclesDao = vehiclesDao;
+        this.rolesDao = rolesDao;
+        this.rolesHasUsersDao = rolesHasUsersDao;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -66,10 +75,56 @@ public class UsersBl {
             LOG.info("Vehículo guardado con éxito para el usuario: {}", userEntity.getEmail());
             LOG.info("ID del usuario asociado al vehículo: {}", vehicleEntity.getUserEntity().getIdUsers());
 
+            // Asignar el rol "USER" al nuevo usuario
+            Optional<RoleEntity> userRole = rolesDao.findByUserRole("USER");
+            if (userRole.isPresent()) {
+                RolesHasUsersEntity rolesHasUsersEntity = new RolesHasUsersEntity();
+                rolesHasUsersEntity.setUserEntity(userEntity);
+                rolesHasUsersEntity.setRoleEntity(userRole.get());
+                rolesHasUsersEntity.setStatus((short) 1);
+                rolesHasUsersEntity.setCreatedAt(LocalDateTime.now());
+                rolesHasUsersDao.save(rolesHasUsersEntity);
+                LOG.info("Rol USER asignado con éxito al usuario: {}", userEntity.getEmail());
+            } else {
+                LOG.warn("El rol USER no se encontró en la base de datos.");
+            }
+
             return new SuccessfulResponse(Globals.httpOkStatus[0], Globals.httpOkStatus[1], "User registered successfully");
         } catch (Exception e) {
             LOG.error("Error registrando usuario", e);
             return new UnsuccessfulResponse(Globals.httpInternalServerErrorStatus[0], Globals.httpInternalServerErrorStatus[1], "Error registering user");
+        }
+    }
+
+    @Transactional
+    public Object assignAdminRole(String email) {
+        try {
+            LOG.info("Asignando rol ADMIN al usuario: {}", email);
+            Optional<UserEntity> userEntityOptional = userDao.findUsersEntityByEmail(email);
+            if (userEntityOptional.isEmpty()) {
+                LOG.warn("El usuario no se encontró: {}", email);
+                return new UnsuccessfulResponse(Globals.httpBadRequest[0], Globals.httpBadRequest[1], "User not found");
+            }
+
+            UserEntity userEntity = userEntityOptional.get();
+
+            Optional<RoleEntity> adminRole = rolesDao.findByUserRole("ADMIN");
+            if (adminRole.isPresent()) {
+                RolesHasUsersEntity rolesHasUsersEntity = new RolesHasUsersEntity();
+                rolesHasUsersEntity.setUserEntity(userEntity);
+                rolesHasUsersEntity.setRoleEntity(adminRole.get());
+                rolesHasUsersEntity.setStatus((short) 1);
+                rolesHasUsersEntity.setCreatedAt(LocalDateTime.now());
+                rolesHasUsersDao.save(rolesHasUsersEntity);
+                LOG.info("Rol ADMIN asignado con éxito al usuario: {}", userEntity.getEmail());
+                return new SuccessfulResponse(Globals.httpOkStatus[0], Globals.httpOkStatus[1], "Admin role assigned successfully");
+            } else {
+                LOG.warn("El rol ADMIN no se encontró en la base de datos.");
+                return new UnsuccessfulResponse(Globals.httpBadRequest[0], Globals.httpBadRequest[1], "Admin role not found");
+            }
+        } catch (Exception e) {
+            LOG.error("Error asignando rol ADMIN al usuario", e);
+            return new UnsuccessfulResponse(Globals.httpInternalServerErrorStatus[0], Globals.httpInternalServerErrorStatus[1], "Error assigning admin role");
         }
     }
 }
