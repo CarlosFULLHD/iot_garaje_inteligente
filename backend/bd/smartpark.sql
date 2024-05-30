@@ -1,116 +1,73 @@
--- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2024-05-26 02:15:45.829
-
--- tables
--- Table: parking
-CREATE TABLE parking (
-                         id int  NOT NULL,
-                         name varchar(255)  NOT NULL,
-                         location varchar(255)  NOT NULL,
-                         total_space int  NOT NULL,
-                         total_rows int  NOT NULL,
-                         total_columns int  NOT NULL,
-                         created_at timestamp  NULL DEFAULT current_timestamp,
-                         updated_at timestamp  NULL DEFAULT current_timestamp,
-                         CONSTRAINT parkings_pk PRIMARY KEY (id)
+-- Table: parkings
+CREATE TABLE IF NOT EXISTS parkings (
+id_par serial NOT NULL PRIMARY KEY,
+name varchar(255) NOT NULL,
+location varchar(255) NOT NULL,
+total_spots int NOT NULL,
+created_at timestamp NULL DEFAULT current_timestamp,
+updated_at timestamp NULL DEFAULT current_timestamp
 );
 
--- Table: reservation
-CREATE TABLE reservation (
-                             id int  NOT NULL,
-                             vehicles_id int  NOT NULL,
-                             space_id int  NOT NULL,
-                             keypad_code varchar(6)  NOT NULL,
-                             CONSTRAINT reservations_pk PRIMARY KEY (id)
+-- Table: users
+CREATE TABLE IF NOT EXISTS users (
+id_users serial NOT NULL PRIMARY KEY,
+name varchar(75) NOT NULL,
+last_name varchar(75) NOT NULL,
+email varchar(30) NOT NULL UNIQUE,
+password varchar(255) NOT NULL,
+pin_code varchar(6) NOT NULL UNIQUE,
+created_at timestamp NULL DEFAULT current_timestamp,
+updated_at timestamp NULL DEFAULT current_timestamp
 );
 
--- Table: rol
-CREATE TABLE rol (
-                     id int  NOT NULL,
-                     name varchar(255)  NOT NULL,
-                     description varchar(255)  NOT NULL,
-                     CONSTRAINT rol_pk PRIMARY KEY (id)
+-- Table: vehicles
+CREATE TABLE IF NOT EXISTS vehicles (
+id_vehicles serial NOT NULL PRIMARY KEY,
+user_id int NOT NULL REFERENCES users(id_users) ON DELETE CASCADE,
+license_plate varchar(255) NOT NULL UNIQUE,
+created_at timestamp NULL DEFAULT current_timestamp,
+updated_at timestamp NULL DEFAULT current_timestamp
 );
 
--- Table: space
-CREATE TABLE space (
-                       id int  NOT NULL,
-                       parking_id int  NOT NULL,
-                       space_number varchar(255)  NOT NULL,
-                       rows_number int  NOT NULL,
-                       columns_number int  NOT NULL,
-                       status int  NOT NULL,
-                       created_at timestamp  NULL DEFAULT current_timestamp,
-                       updated_at timestamp  NULL DEFAULT current_timestamp,
-                       CONSTRAINT spots_pk PRIMARY KEY (id)
+-- Table: roles
+CREATE TABLE IF NOT EXISTS roles (
+id_role serial NOT NULL PRIMARY KEY,
+user_role varchar(75) NOT NULL,
+description varchar(255) NOT NULL,
+status smallint NOT NULL,
+created_at timestamp NOT NULL
 );
 
--- Table: user
-CREATE TABLE "user" (
-                        id int  NOT NULL,
-                        name varchar(255)  NOT NULL,
-                        last_name varchar(255)  NOT NULL,
-                        email varchar(255)  NOT NULL,
-                        password varchar(255)  NOT NULL,
-                        created_at timestamp  NULL DEFAULT current_timestamp,
-                        updated_at timestamp  NULL DEFAULT current_timestamp,
-                        rol_id int  NOT NULL,
-                        CONSTRAINT AK_0 UNIQUE (email) NOT DEFERRABLE  INITIALLY IMMEDIATE,
-                        CONSTRAINT users_pk PRIMARY KEY (id)
+-- Table: roles_has_users
+CREATE TABLE IF NOT EXISTS roles_has_users (
+   id_role_us serial NOT NULL PRIMARY KEY,
+   status smallint NOT NULL,
+   created_at timestamp NOT NULL,
+   roles_id_role int NOT NULL REFERENCES roles(id_role) ON DELETE CASCADE,
+users_id_users int NOT NULL REFERENCES users(id_users) ON DELETE CASCADE
 );
 
--- Table: vehicle
-CREATE TABLE vehicle (
-                         id int  NOT NULL,
-                         user_id int  NOT NULL,
-                         license_plate varchar(255)  NOT NULL,
-                         branch varchar(255)  NOT NULL,
-                         model varchar(255)  NOT NULL,
-                         created_at timestamp  NULL DEFAULT current_timestamp,
-                         updated_at timestamp  NULL DEFAULT current_timestamp,
-                         CONSTRAINT AK_2 UNIQUE (license_plate) NOT DEFERRABLE  INITIALLY IMMEDIATE,
-                         CONSTRAINT vehicles_pk PRIMARY KEY (id)
+CREATE TABLE IF NOT EXISTS spots (
+id_spots serial NOT NULL PRIMARY KEY,
+parking_id int NOT NULL REFERENCES parkings(id_par) ON DELETE CASCADE,
+spot_number INT NOT NULL UNIQUE,
+status SMALLINT NOT NULL DEFAULT 1, -- 1 para disponible, 0 para ocupado
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- foreign keys
--- Reference: reservation_space (table: reservation)
-ALTER TABLE reservation ADD CONSTRAINT reservation_space
-    FOREIGN KEY (space_id)
-        REFERENCES space (id)
-        NOT DEFERRABLE
-            INITIALLY IMMEDIATE
-;
+CREATE TABLE IF NOT EXISTS reservations (
+id_reservation SERIAL PRIMARY KEY,
+user_id INT REFERENCES users(id_user) ON DELETE CASCADE,
+vehicle_id INT REFERENCES vehicles(id_vehicle) ON DELETE CASCADE,
+spot_id INT REFERENCES spots(id_spot) ON DELETE CASCADE,
+scheduled_entry TIMESTAMP NOT NULL,
+scheduled_exit TIMESTAMP NOT NULL,
+actual_entry TIMESTAMP,
+actual_exit TIMESTAMP,
+status VARCHAR(50) NOT NULL,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
--- Reference: reservation_vehicle (table: reservation)
-ALTER TABLE reservation ADD CONSTRAINT reservation_vehicle
-    FOREIGN KEY (vehicles_id)
-        REFERENCES vehicle (id)
-        NOT DEFERRABLE
-            INITIALLY IMMEDIATE
-;
 
--- Reference: space_parking (table: space)
-ALTER TABLE space ADD CONSTRAINT space_parking
-    FOREIGN KEY (parking_id)
-        REFERENCES parking (id)
-        NOT DEFERRABLE
-            INITIALLY IMMEDIATE
-;
-
--- Reference: user_rol (table: user)
-ALTER TABLE "user" ADD CONSTRAINT user_rol
-    FOREIGN KEY (rol_id)
-        REFERENCES rol (id)
-        NOT DEFERRABLE
-            INITIALLY IMMEDIATE
-;
-
--- Reference: vehicule_user (table: vehicle)
-ALTER TABLE vehicle ADD CONSTRAINT vehicule_user
-    FOREIGN KEY (user_id)
-        REFERENCES "user" (id)
-        NOT DEFERRABLE
-            INITIALLY IMMEDIATE
-;
-
--- End of file.

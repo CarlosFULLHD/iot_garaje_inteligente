@@ -1,3 +1,4 @@
+from os import utime
 from machine import Pin, time_pulse_us
 import time
 import urequests
@@ -15,35 +16,40 @@ barrera = Pin(9, Pin.OUT)
 wifi_init()
 
 # Función para medir la distancia
+
+
 def measure_distance(samples=5, sample_delay=0.1, threshold=50):
     distances = []
-    
+
     for _ in range(samples):
         trig.value(1)
         utime.sleep_us(10)
         trig.value(0)
-        
+
         t1 = utime.ticks_us()
         while echo.value() == 0:
             t1 = utime.ticks_us()
         while echo.value() == 1:
             t2 = utime.ticks_us()
-        
+
         t = t2 - t1
         d = 17 * t / 1000  # Convertir el tiempo en microsegundos a distancia en cm
         if d <= threshold:  # Filtrar valores atípicos
             distances.append(d)
-        
+
         utime.sleep(sample_delay)  # Esperar antes de la próxima muestra
-    
+
     if distances:
         average_distance = sum(distances) / len(distances)
     else:
-        average_distance = threshold  # Valor por defecto si todas las lecturas fueron atípicas
-    
+        # Valor por defecto si todas las lecturas fueron atípicas
+        average_distance = threshold
+
     return average_distance
 
 # Función para verificar la reserva
+
+
 def check_reservation(keypad_code):
     url = "http://tu-servidor-api/reservations/check"
     response = urequests.post(url, json={"keypad_code": keypad_code})
@@ -54,15 +60,19 @@ def check_reservation(keypad_code):
     return None
 
 # Función para actualizar el estado del espacio
+
+
 def update_space_status(space_id, status):
     url = "http://tu-servidor-api/spaces/update"
     urequests.post(url, json={"space_id": space_id, "status": status})
+
 
 # Loop principal
 while True:
     distance = measure_distance()
     if distance < 10:  # Si se detecta un vehículo a menos de 10 cm
-        keypad_code = input("Ingrese el código de reserva: ")  # Simulación de entrada de código
+        # Simulación de entrada de código
+        keypad_code = input("Ingrese el código de reserva: ")
         space_id = check_reservation(keypad_code)
         if space_id:
             led_amarillo.off()

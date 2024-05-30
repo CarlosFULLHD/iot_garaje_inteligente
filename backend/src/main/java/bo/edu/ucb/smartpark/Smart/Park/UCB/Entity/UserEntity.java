@@ -1,45 +1,54 @@
 package bo.edu.ucb.smartpark.Smart.Park.UCB.Entity;
 
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@Entity
 @Getter
 @Setter
-@ToString
-
-@Entity
-@Table(name = "user", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class UserEntity {
-
     @Id
-    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long idUsers;
 
-    @Column(name = "name", nullable = false, length = 255)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "last_name", nullable = false, length = 255)
+    @Column(nullable = false)
     private String lastName;
 
-    @Column(name = "email", nullable = false, length = 255, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 255)
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "created_at", nullable = true, columnDefinition = "timestamp default current_timestamp")
-    private Timestamp createdAt;
+    @Column(nullable = false, unique = true)
+    private String pinCode;
 
-    @Column(name = "updated_at", nullable = true, columnDefinition = "timestamp default current_timestamp")
-    private Timestamp updatedAt;
+    @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
+    private LocalDateTime createdAt;
 
-    @Column(name = "rol_id", nullable = false)
-    private int rolId;
+    @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
+    private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "userEntity")
+    private List<VehicleEntity> vehicles;
+
+    @OneToMany(mappedBy = "userEntity")
+    private List<ReservationEntity> reservations;
+
+    @OneToMany(mappedBy = "userEntity")
+    private List<RolesHasUsersEntity> rolesHasUsers;
 
 
 }
