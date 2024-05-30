@@ -1,10 +1,9 @@
 package bo.edu.ucb.smartpark.Smart.Park.UCB.Entity;
+
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 @Data
 @NoArgsConstructor
@@ -16,7 +15,6 @@ public class VehicleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idVehicles;
-
 
     @ManyToOne
     @JoinColumn(name = "users_id", nullable = false)
@@ -30,7 +28,6 @@ public class VehicleEntity {
 
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime updatedAt;
-
 
     @OneToMany(mappedBy = "vehicleEntity")
     private List<ReservationEntity> reservationsReservationEntityList;

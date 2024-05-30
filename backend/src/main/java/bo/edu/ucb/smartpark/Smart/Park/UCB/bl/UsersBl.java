@@ -47,6 +47,7 @@ public class UsersBl {
             userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
             userEntity.setPinCode(request.getPinCode());
             userEntity.setCreatedAt(LocalDateTime.now());
+            userEntity.setUpdatedAt(LocalDateTime.now());
 
             // Guardar usuario y obtener el ID generado
             userEntity = userDao.save(userEntity);
@@ -58,6 +59,7 @@ public class UsersBl {
             vehicleEntity.setLicensePlate(request.getLicensePlate());
             vehicleEntity.setUserEntity(userEntity);
             vehicleEntity.setCreatedAt(LocalDateTime.now());
+            vehicleEntity.setUpdatedAt(LocalDateTime.now());
 
             // Guardar vehículo
             vehiclesDao.save(vehicleEntity);

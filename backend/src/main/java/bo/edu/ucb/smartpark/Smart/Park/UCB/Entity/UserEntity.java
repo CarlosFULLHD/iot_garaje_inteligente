@@ -1,6 +1,5 @@
 package bo.edu.ucb.smartpark.Smart.Park.UCB.Entity;
 
-import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,9 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
-@Entity(name = "users")
+@Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class UserEntity {
     @Id
@@ -44,12 +41,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VehicleEntity> vehicles;
 
-
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReservationEntity> reservations;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RolesHasUsersEntity> rolesHasUsers;
-
-
 }
