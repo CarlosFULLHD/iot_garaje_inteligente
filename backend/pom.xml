@@ -14,7 +14,7 @@
 	<name>Smart-Park-UCB</name>
 	<description>Smart App using IoT devices for UCB parking</description>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

@@ -2,6 +2,7 @@ package bo.edu.ucb.smartpark.Smart.Park.UCB.Configuration.security;
 
 import bo.edu.ucb.smartpark.Smart.Park.UCB.Configuration.security.Filters.JwtRequestFilter;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.Configuration.security.Jwt.JwtUtils;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.bl.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ public class SecurityConfiguration {
 
     @Autowired
     private JwtUtils jwtUtils;
+
 
     @Bean
     public JwtRequestFilter jwtRequestFilter() {

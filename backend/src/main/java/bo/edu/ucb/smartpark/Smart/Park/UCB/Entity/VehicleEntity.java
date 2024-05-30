@@ -17,8 +17,9 @@ public class VehicleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idVehicles;
 
+
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private UserEntity userEntity;
 
     @Column(nullable = false, unique = true)
@@ -29,6 +30,7 @@ public class VehicleEntity {
 
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime updatedAt;
+
 
     @OneToMany(mappedBy = "vehicleEntity")
     private List<ReservationEntity> reservationsReservationEntityList;

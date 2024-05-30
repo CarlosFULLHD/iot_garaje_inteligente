@@ -11,9 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
 @Getter
 @Setter
+@Entity(name = "users")
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
 public class UserEntity {
     @Id
@@ -41,13 +41,14 @@ public class UserEntity {
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "userEntity")
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VehicleEntity> vehicles;
 
-    @OneToMany(mappedBy = "userEntity")
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReservationEntity> reservations;
 
-    @OneToMany(mappedBy = "userEntity")
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RolesHasUsersEntity> rolesHasUsers;
 
 

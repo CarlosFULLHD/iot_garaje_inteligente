@@ -33,6 +33,6 @@ public class SpotEntity {
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "spotEntity")
+    @OneToMany(mappedBy = "spotEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReservationEntity> reservations;
 }

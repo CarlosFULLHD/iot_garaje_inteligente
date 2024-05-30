@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-@Service
+
 public class CustomUserDetails implements UserDetails {
 
     private final UserEntity userEntity;

@@ -16,15 +16,15 @@ public class ReservationEntity {
     private Long idRes;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private UserEntity userEntity;
 
     @ManyToOne
-    @JoinColumn(name = "vehicle_id", nullable = false)
+    @JoinColumn(name = "vehicles_id", nullable = false)
     private VehicleEntity vehicleEntity;
 
     @ManyToOne
-    @JoinColumn(name = "spot_id", nullable = false)
+    @JoinColumn(name = "spots_id", nullable = false)
     private SpotEntity spotEntity;
 
     @Column(nullable = false)

@@ -14,16 +14,7 @@ import java.util.Optional;
 
 public interface UserDao extends JpaRepository<UserEntity, Long> {
 
-    Optional<UserEntity> findUsersEntityByUsername(String username);
-
-    Optional<UserEntity> findByIdUsersAndStatus(Long idUsers, int status);
-
-    Optional<UserEntity> findById(Long idUsers);
-
-
-    // Ajuste para filtrar por RoleHasPersonEntity y estado
-    // Asegúrate de que el método corresponda con la lógica y estructura de tu base de datos
-    List<UserEntity> findByRoleHasPersonEntityAndStatus(RolesHasUsersEntity roleHasPerson, int status);
+    Optional<UserEntity> findUsersEntityByEmail(String email);
 
 
     Optional<Object> findByEmail(String email);

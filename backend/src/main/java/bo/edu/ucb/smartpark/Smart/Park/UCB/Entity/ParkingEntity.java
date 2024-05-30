@@ -32,6 +32,6 @@ public class ParkingEntity {
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "parkingEntity")
+    @OneToMany(mappedBy = "parkingEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SpotEntity> spots;
 }

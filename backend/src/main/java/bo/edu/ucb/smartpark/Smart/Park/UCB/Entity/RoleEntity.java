@@ -30,6 +30,6 @@ public class RoleEntity {
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "roleEntity")
+    @OneToMany(mappedBy = "roleEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RolesHasUsersEntity> rolesHasUsers;
 }
