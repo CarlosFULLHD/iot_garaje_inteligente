@@ -11,11 +11,11 @@ updated_at timestamp NULL DEFAULT current_timestamp
 -- Table: users
 CREATE TABLE IF NOT EXISTS users (
 id_users serial NOT NULL PRIMARY KEY,
-name varchar(75) NOT NULL,
-last_name varchar(75) NOT NULL,
-email varchar(30) NOT NULL UNIQUE,
+name varchar(255) NOT NULL,
+last_name varchar(255) NOT NULL,
+email varchar(255) NOT NULL UNIQUE,
 password varchar(255) NOT NULL,
-pin_code varchar(6) NOT NULL UNIQUE,
+pin_code varchar(8) NOT NULL UNIQUE,
 created_at timestamp NULL DEFAULT current_timestamp,
 updated_at timestamp NULL DEFAULT current_timestamp
 );
@@ -25,6 +25,10 @@ CREATE TABLE IF NOT EXISTS vehicles (
 id_vehicles serial NOT NULL PRIMARY KEY,
 users_id int NOT NULL REFERENCES users(id_users) ON DELETE CASCADE,
 license_plate varchar(255) NOT NULL UNIQUE,
+car_branch varchar(255) NOT NULL,
+car_model varchar(255) NOT NULL ,
+car_color varchar(255) NOT NULL ,
+car_manufacturing_date varchar(255) NOT NULL default '',
 created_at timestamp NULL DEFAULT current_timestamp,
 updated_at timestamp NULL DEFAULT current_timestamp
 );
@@ -60,7 +64,7 @@ CREATE TABLE IF NOT EXISTS reservations (
 id_reservation SERIAL PRIMARY KEY,
 users_id INT REFERENCES users(id_users) ON DELETE CASCADE,
 vehicles_id INT REFERENCES vehicles(id_vehicles) ON DELETE CASCADE,
-spot_id INT REFERENCES spots(id_spots) ON DELETE CASCADE,
+spots_id INT REFERENCES spots(id_spots) ON DELETE CASCADE,
 scheduled_entry TIMESTAMP NOT NULL,
 scheduled_exit TIMESTAMP NOT NULL,
 actual_entry TIMESTAMP,
@@ -79,10 +83,10 @@ INSERT INTO roles (user_role, description, status, created_at) VALUES
 ('USER', 'User role', 1, CURRENT_TIMESTAMP);
 
 INSERT INTO users (name, last_name, email, password, pin_code, created_at, updated_at) VALUES
-('Carlos', 'Nina', 'carlos.nina@ucb.edu.bo', '$2a$10$J5Y5dnEtOFprF/axBPYoFOTDkjjBsnyCVsXnNjaOMRjNDEvIwTshS', '1234', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Maria', 'Lopez', 'maria.lopez@ucb.edu.bo', '$2a$10$J5Y5dnEtOFprF/axBPYoFOTDkjjBsnyCVsXnNjaOMRjNDEvIwTshS', '5678', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Juan', 'Perez', 'juan.perez@ucb.edu.bo', '$2a$10$J5Y5dnEtOFprF/axBPYoFOTDkjjBsnyCVsXnNjaOMRjNDEvIwTshS', '9012', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Ana', 'Torres', 'ana.torres@ucb.edu.bo', '$2a$10$J5Y5dnEtOFprF/axBPYoFOTDkjjBsnyCVsXnNjaOMRjNDEvIwTshS', '3456', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('Carlos', 'Nina', 'carlos.nina@ucb.edu.bo', 'password_hash1', '1234', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Maria', 'Lopez', 'maria.lopez@ucb.edu.bo', 'password_hash2', '5678', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Juan', 'Perez', 'juan.perez@ucb.edu.bo', 'password_hash3', '9012', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Ana', 'Torres', 'ana.torres@ucb.edu.bo', 'password_hash4', '3456', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO roles_has_users (roles_id_role, users_id_users, status, created_at) VALUES
 (1, 1, 1, CURRENT_TIMESTAMP),  -- Carlos Nina as ADMIN
@@ -117,18 +121,17 @@ INSERT INTO spots (parking_id, spot_number, status, created_at, updated_at) VALU
 (2, 15, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (2, 16, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO vehicles (license_plate, users_id, created_at, updated_at) VALUES
-('ABC123', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Carlos Nina
-('DEF456', 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Maria Lopez
-('GHI789', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Juan Perez
-('JKL012', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP); -- Ana Torres
-
+INSERT INTO vehicles (license_plate, users_id, car_branch, car_model, car_color, car_manufacturing_date, created_at, updated_at) VALUES
+('ABC123', 1, 'Toyota', 'Corolla', 'Red', 2018, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Carlos Nina
+('DEF456', 2, 'Honda', 'Civic', 'Blue', 2019, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Maria Lopez
+('GHI789', 3, 'Ford', 'Focus', 'Black', 2020, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Juan Perez
+('JKL012', 4, 'Chevrolet', 'Malibu', 'White', 2017, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP); -- Ana Torres
 
 -- Reservations for each user, assuming one spot per user for simplicity
-INSERT INTO reservations (users_id, vehicles_id, spot_id, scheduled_entry, scheduled_exit, status, created_at, updated_at) VALUES
-                           (1, 1, 1, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Carlos Nina
-                           (2, 2, 2, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Maria Lopez
-                           (3, 3, 3, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Juan Perez
-                           (4, 4, 4, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP); -- Ana Torres
+INSERT INTO reservations (users_id, vehicles_id, spots_id, scheduled_entry, scheduled_exit, status, created_at, updated_at) VALUES
+(1, 1, 1, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Carlos Nina
+(2, 2, 2, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Maria Lopez
+(3, 3, 3, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Juan Perez
+(4, 4, 4, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP); -- Ana Torres
 
 

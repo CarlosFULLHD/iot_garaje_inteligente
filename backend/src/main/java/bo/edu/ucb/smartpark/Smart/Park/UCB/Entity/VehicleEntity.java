@@ -23,6 +23,18 @@ public class VehicleEntity {
     @Column(nullable = false, unique = true)
     private String licensePlate;
 
+    @Column(nullable = false)
+    private String carBranch;
+
+    @Column(nullable = false)
+    private String carModel;
+
+    @Column(nullable = false)
+    private String carColor;
+
+    @Column(nullable = false)
+    private String carManufacturingDate;
+
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime createdAt;
 

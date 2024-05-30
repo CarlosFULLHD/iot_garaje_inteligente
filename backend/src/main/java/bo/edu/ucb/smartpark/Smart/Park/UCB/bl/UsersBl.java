@@ -66,28 +66,19 @@ public class UsersBl {
             // Crear nueva entidad de vehículo
             VehicleEntity vehicleEntity = new VehicleEntity();
             vehicleEntity.setLicensePlate(request.getLicensePlate());
+            vehicleEntity.setCarBranch(request.getCarBranch());
+            vehicleEntity.setCarModel(request.getCarModel());
+            vehicleEntity.setCarColor(request.getCarColor());
+            vehicleEntity.setCarManufacturingDate(request.getCarManufacturingDate());
             vehicleEntity.setUserEntity(userEntity);
             vehicleEntity.setCreatedAt(LocalDateTime.now());
             vehicleEntity.setUpdatedAt(LocalDateTime.now());
+
 
             // Guardar vehículo
             vehiclesDao.save(vehicleEntity);
             LOG.info("Vehículo guardado con éxito para el usuario: {}", userEntity.getEmail());
             LOG.info("ID del usuario asociado al vehículo: {}", vehicleEntity.getUserEntity().getIdUsers());
-
-            // Asignar el rol "USER" al nuevo usuario
-            Optional<RoleEntity> userRole = rolesDao.findByUserRole("USER");
-            if (userRole.isPresent()) {
-                RolesHasUsersEntity rolesHasUsersEntity = new RolesHasUsersEntity();
-                rolesHasUsersEntity.setUserEntity(userEntity);
-                rolesHasUsersEntity.setRoleEntity(userRole.get());
-                rolesHasUsersEntity.setStatus((short) 1);
-                rolesHasUsersEntity.setCreatedAt(LocalDateTime.now());
-                rolesHasUsersDao.save(rolesHasUsersEntity);
-                LOG.info("Rol USER asignado con éxito al usuario: {}", userEntity.getEmail());
-            } else {
-                LOG.warn("El rol USER no se encontró en la base de datos.");
-            }
 
             return new SuccessfulResponse(Globals.httpOkStatus[0], Globals.httpOkStatus[1], "User registered successfully");
         } catch (Exception e) {

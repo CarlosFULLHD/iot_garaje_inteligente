@@ -5,11 +5,14 @@ Content-Type: application/json
 {
   "name": "Carlos Daniel",
   "lastName": "Nina Reynaga",
-  "email": "carlos.nina11@ucb.edu.bo",
+  "email": "carlos.nina11111@ucb.edu.bo",
   "password": "12345678",
   "pinCode": "4444",
-  "licensePlate": "4444LPG"
-
+  "licensePlate": "4444LPG",
+  "carBranch": "Toyota",
+  "carModel": "Corolla",
+  "carColor": "Rojo",
+  "carManufacturingDate":"2019"
 }
 
 ### Login:
@@ -18,7 +21,7 @@ POST http://localhost:8080/api/v1/users/login
 Content-Type: application/json
 
 {
-  "username": "carlos.nina@ucb.edu.bo",
+  "username": "carlos.nina11111@ucb.edu.bo",
   "password": "12345678"
 }
 
