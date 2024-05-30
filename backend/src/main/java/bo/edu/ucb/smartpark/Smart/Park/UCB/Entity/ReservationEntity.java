@@ -1,4 +1,5 @@
 package bo.edu.ucb.smartpark.Smart.Park.UCB.Entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 

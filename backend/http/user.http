@@ -5,10 +5,10 @@ Content-Type: application/json
 {
   "name": "Carlos Daniel",
   "lastName": "Nina Reynaga",
-  "email": "carlos.nina11111@ucb.edu.bo",
+  "email": "carlos.nina1@ucb.edu.bo",
   "password": "12345678",
-  "pinCode": "4444",
-  "licensePlate": "4444LPG",
+  "pinCode": "1111",
+  "licensePlate": "1444LPG",
   "carBranch": "Toyota",
   "carModel": "Corolla",
   "carColor": "Rojo",
