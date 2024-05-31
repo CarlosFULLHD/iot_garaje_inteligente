@@ -1,5 +1,7 @@
-// lib/utils/constants.dart
-
 class Constants {
-  static const String appName = 'Flutter Login';
+  static String checkInternet = 'Check internet';
+  static String checkServer = 'Check server';
+
+  static String ssToken = 'token';
+  static String ssUsername = 'username';
 }
