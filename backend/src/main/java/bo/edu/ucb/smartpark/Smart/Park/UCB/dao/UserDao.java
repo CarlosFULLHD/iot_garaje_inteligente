@@ -19,5 +19,7 @@ public interface UserDao extends JpaRepository<UserEntity, Long> {
 
 
     Optional<Object> findByEmail(String email);
+
+    boolean existsByPinCode(String pin);
 }
 

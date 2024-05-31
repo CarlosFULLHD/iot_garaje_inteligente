@@ -30,3 +30,10 @@ Content-Type: application/json
 POST http://localhost:8080/api/v1/users/assign-admin-role?email=carlos.nina11@ucb.edu.bo
 Content-Type: application/json
 
+### Solicitud POST para Verificar el PIN
+POST http://localhost:8080/api/v1/users/verify-pin
+Content-Type: application/json
+
+{
+"pin": "1234"
+}

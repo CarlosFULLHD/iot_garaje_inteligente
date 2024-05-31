@@ -7,7 +7,9 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.UnsuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.AuthLoginrequest;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.RegisterUserRequest;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.VerifyPinRequestDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.AuthResponse;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.VerifyPinResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.util.Globals;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,6 +53,11 @@ public class UsersApi {
         LOG.info("Asignando rol ADMIN al usuario con email: {}", email);
         Object response = usersBl.assignAdminRole(email);
         return ResponseEntity.status(response instanceof SuccessfulResponse ? HttpStatus.OK : HttpStatus.BAD_REQUEST).body(response);
+    }
+    @PostMapping("/verify-pin")
+    public ResponseEntity<VerifyPinResponseDto> verifyPin(@RequestBody VerifyPinRequestDto verifyPinRequestDto) {
+        boolean isValid = usersBl.verifyPin(verifyPinRequestDto.getPin());
+        return ResponseEntity.ok(new VerifyPinResponseDto(isValid));
     }
 
 

@@ -18,8 +18,8 @@ Content-Type: application/json
 
 {
   "userId": 1,
-  "vehicleId": 3,
-  "spotId": 2,
+  "vehicleId": 1,
+  "spotId": 8,
   "scheduledEntry": "2024-06-01T08:00:00",
   "scheduledExit": "2024-06-01T10:00:00"
 }
@@ -27,10 +27,32 @@ Content-Type: application/json
 
 ### Actualizar el estado de un spot
 
-POST http://localhost:8080/api/v1/parkings/spaces/update
+POST http://localhost:8080/api/v1/parkings/spots/update
 Content-Type: application/json
 
 {
   "spaceId": 16,
   "status": 2
 }
+
+### Obtener el estado de un spot
+GET http://localhost:8080/api/v1/parkings/spots/{spaceId}
+### Obtener el estado de un spot
+GET http://localhost:8080/api/v1/parkings/spots/1
+
+
+
+### Obtener detalles de una reserva específica
+GET http://localhost:8080/api/v1/parkings/reservations/{reservationId}
+### Obtener detalles de una reserva específica
+GET http://localhost:8080/api/v1/parkings/reservations/3
+
+### Cancelar una reserva
+DELETE http://localhost:8080/api/v1/parkings/reservations/{reservationId}
+### Cancelar una reserva
+DELETE http://localhost:8080/api/v1/parkings/reservations/1
+
+### Obtener todas las reservas de un usuario
+GET http://localhost:8080/api/v1/parkings/users/{userId}/reservations
+### Obtener todas las reservas de un usuario
+GET http://localhost:8080/api/v1/parkings/users/1/reservations
