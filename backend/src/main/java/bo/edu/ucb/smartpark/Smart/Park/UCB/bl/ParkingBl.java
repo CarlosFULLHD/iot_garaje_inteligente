@@ -5,6 +5,7 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.SpotEntity;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.ParkingDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.SpotDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ParkingAndSpotsResponseDto;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpaceStatusUpdateDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpotResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -38,6 +39,16 @@ public class ParkingBl {
                 .map(this::mapToSpotResponseDto)
                 .collect(Collectors.toList());
     }
+
+    public void updateSpaceStatus(SpaceStatusUpdateDto spaceStatusUpdateDto) {
+        SpotEntity spotEntity = spotDao.findById(spaceStatusUpdateDto.getSpaceId())
+                .orElseThrow(() -> new RuntimeException("Spot not found"));
+        spotEntity.setStatus(spaceStatusUpdateDto.getStatus());
+        spotDao.save(spotEntity);
+    }
+
+
+
 
     private ParkingAndSpotsResponseDto mapToDto(ParkingEntity parkingEntity) {
         List<SpotEntity> spotEntities = spotDao.findByParkingEntity_IdPar(parkingEntity.getIdPar());
@@ -75,4 +86,6 @@ public class ParkingBl {
                 .updatedAt(spotEntity.getUpdatedAt())
                 .build();
     }
+
+
 }
