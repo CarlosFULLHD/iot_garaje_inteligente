@@ -1,0 +1,58 @@
+### Obtener todos los parqueos y spots
+GET http://localhost:8080/api/v1/parkings
+Content-Type: application/json
+
+### Obtener todos los spots de un parqueo específico
+GET http://localhost:8080/api/v1/parkings/{parkingId}/spots
+Content-Type: application/json
+
+### Obtener todos los spots de un parqueo específico para parkingId 1
+GET http://localhost:8080/api/v1/parkings/1/spots
+Content-Type: application/json
+
+
+
+### Crear una reserva
+POST http://localhost:8080/api/v1/parkings/reservations
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "vehicleId": 1,
+  "spotId": 8,
+  "scheduledEntry": "2024-06-01T08:00:00",
+  "scheduledExit": "2024-06-01T10:00:00"
+}
+
+
+### Actualizar el estado de un spot
+
+POST http://localhost:8080/api/v1/parkings/spots/update
+Content-Type: application/json
+
+{
+  "spaceId": 1,
+  "status": 1
+}
+
+### Obtener el estado de un spot
+GET http://localhost:8080/api/v1/parkings/spots/{spaceId}
+### Obtener el estado de un spot
+GET http://localhost:8080/api/v1/parkings/spots/1
+
+
+
+### Obtener detalles de una reserva específica
+GET http://localhost:8080/api/v1/parkings/reservations/{reservationId}
+### Obtener detalles de una reserva específica
+GET http://localhost:8080/api/v1/parkings/reservations/3
+
+### Cancelar una reserva
+DELETE http://localhost:8080/api/v1/parkings/reservations/{reservationId}
+### Cancelar una reserva
+DELETE http://localhost:8080/api/v1/parkings/reservations/1
+
+### Obtener todas las reservas de un usuario
+GET http://localhost:8080/api/v1/parkings/users/{userId}/reservations
+### Obtener todas las reservas de un usuario
+GET http://localhost:8080/api/v1/parkings/users/1/reservations

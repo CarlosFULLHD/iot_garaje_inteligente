@@ -1,0 +1,39 @@
+### Registrar un usuario nuevo:
+POST http://localhost:8080/api/v1/users/register
+Content-Type: application/json
+
+{
+  "name": "Carlos Daniel",
+  "lastName": "Nina Reynaga",
+  "email": "carlos.nina1@ucb.edu.bo",
+  "password": "12345678",
+  "pinCode": "1111",
+  "licensePlate": "1444LPG",
+  "carBranch": "Toyota",
+  "carModel": "Corolla",
+  "carColor": "Rojo",
+  "carManufacturingDate":"2019"
+}
+
+### Login:
+
+POST http://localhost:8080/api/v1/users/login
+Content-Type: application/json
+
+{
+  "username": "carlos.nina11111@ucb.edu.bo",
+  "password": "12345678"
+}
+
+
+### otorgar rol admin
+POST http://localhost:8080/api/v1/users/assign-admin-role?email=carlos.nina11@ucb.edu.bo
+Content-Type: application/json
+
+### Solicitud POST para Verificar el PIN
+POST http://localhost:8080/api/v1/users/verify-pin
+Content-Type: application/json
+
+{
+"pin": "1234"
+}
