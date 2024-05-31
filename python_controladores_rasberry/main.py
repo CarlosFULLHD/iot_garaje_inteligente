@@ -53,7 +53,7 @@ def measure_distance(samples=5, sample_delay=0.1, threshold=50):
 
 def update_space_status(space_id, status):
     # Cambia esto a la URL correcta de tu backend
-    url = "http://<IP_DE_TU_BACKEND>:8080/api/v1/parkings/spaces/update"
+    url = "http://<IP_DE_TU_BACKEND>:8080/api/v1/parkings/spots/update"
     data = {"spaceId": space_id, "status": status}
     headers = {'Content-Type': 'application/json'}
     response = urequests.post(url, json=data, headers=headers)
