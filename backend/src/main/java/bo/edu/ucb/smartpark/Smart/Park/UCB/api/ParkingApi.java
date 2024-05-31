@@ -48,7 +48,7 @@ public class ParkingApi {
         return ResponseEntity.ok("Reservation created successfully");
     }
 
-    @PostMapping("/spaces/update")
+    @PostMapping("/spots/update")
     public ResponseEntity<String> updateSpaceStatus(@RequestBody SpaceStatusUpdateDto spaceStatusUpdateDto) {
         parkingBl.updateSpaceStatus(spaceStatusUpdateDto);
         return ResponseEntity.ok("Space status updated successfully");

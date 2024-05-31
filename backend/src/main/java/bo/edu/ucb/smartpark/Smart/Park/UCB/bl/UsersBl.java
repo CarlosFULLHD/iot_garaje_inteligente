@@ -118,4 +118,7 @@ public class UsersBl {
             return new UnsuccessfulResponse(Globals.httpInternalServerErrorStatus[0], Globals.httpInternalServerErrorStatus[1], "Error assigning admin role");
         }
     }
+    public boolean verifyPin(String pin) {
+        return userDao.existsByPinCode(pin);
+    }
 }
