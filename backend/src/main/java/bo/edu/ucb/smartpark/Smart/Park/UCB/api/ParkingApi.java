@@ -74,4 +74,11 @@ public class ParkingApi {
         return ResponseEntity.ok(reservations);
     }
 
+    // Endpoint para obtener el estado de un espacio por su ID
+    @GetMapping("/spots/{spaceId}")
+    public ResponseEntity<SpotResponseDto> getSpaceStatus(@PathVariable Long spaceId) {
+        SpotResponseDto spotResponseDto = reservationBl.getSpaceStatus(spaceId);
+        return ResponseEntity.ok(spotResponseDto);
+    }
+
 }

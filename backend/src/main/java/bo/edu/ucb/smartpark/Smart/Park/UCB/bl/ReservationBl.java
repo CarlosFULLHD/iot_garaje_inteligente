@@ -10,6 +10,7 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.UserDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.VehiclesDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ReservationDetailsDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ReservationRequestDto;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpotResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +101,20 @@ public class ReservationBl {
                 .updatedAt(reservationEntity.getUpdatedAt())
                 .build();
     }
+    public SpotResponseDto getSpaceStatus(Long spaceId) {
+        SpotEntity spotEntity = spotDao.findById(spaceId)
+                .orElseThrow(() -> new RuntimeException("Spot not found"));
+        return mapToSpotResponseDto(spotEntity);
+    }
 
+    private SpotResponseDto mapToSpotResponseDto(SpotEntity spotEntity) {
+        return SpotResponseDto.builder()
+                .idSpots(spotEntity.getIdSpots())
+                .parkingId(spotEntity.getParkingEntity().getIdPar())
+                .spotNumber(spotEntity.getSpotNumber())
+                .status(spotEntity.getStatus())
+                .updatedAt(spotEntity.getUpdatedAt())
+                .build();
+    }
 
 }
