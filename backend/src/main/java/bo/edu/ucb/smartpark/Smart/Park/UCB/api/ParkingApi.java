@@ -53,6 +53,9 @@ public class ParkingApi {
         parkingBl.updateSpaceStatus(spaceStatusUpdateDto);
         return ResponseEntity.ok("Space status updated successfully");
     }
+
+
+
     // Obtener detalles de una reserva específica
     @GetMapping("/reservations/{reservationId}")
     public ResponseEntity<ReservationDetailsDto> getReservationDetails(@PathVariable Long reservationId) {
@@ -80,5 +83,45 @@ public class ParkingApi {
         SpotResponseDto spotResponseDto = reservationBl.getSpaceStatus(spaceId);
         return ResponseEntity.ok(spotResponseDto);
     }
+    @GetMapping("/reservations/entry-exit-differences")
+    public ResponseEntity<List<EntryExitDifferenceDto>> getEntryExitDifferences() {
+        List<EntryExitDifferenceDto> differences = reservationBl.getEntryExitDifferences();
+        return ResponseEntity.ok(differences);
+    }
+    @GetMapping("/reservations/unutilized")
+    public ResponseEntity<Long> getUnutilizedReservations() {
+        long unutilizedReservations = reservationBl.countUnutilizedReservations();
+        return ResponseEntity.ok(unutilizedReservations);
+    }
+
+    @GetMapping("/reservations/late-exits-percentage")
+    public ResponseEntity<Double> getLateExitsPercentage() {
+        double lateExitsPercentage = reservationBl.calculateLateExitsPercentage();
+        return ResponseEntity.ok(lateExitsPercentage);
+    }
+    @GetMapping("/peak-hours")
+    public ResponseEntity<List<PeakHourDto>> getPeakHours() {
+        List<PeakHourDto> peakHours = reservationBl.getPeakHours();
+        return ResponseEntity.ok(peakHours);
+    }
+
+    @GetMapping("/users/frequent-users")
+    public ResponseEntity<List<FrequentUserDto>> getFrequentUsers() {
+        List<FrequentUserDto> frequentUsers = reservationBl.getFrequentUsers();
+        return ResponseEntity.ok(frequentUsers);
+    }
+    @GetMapping("/demanded-spots")
+    public ResponseEntity<List<DemandedSpotDto>> getDemandedSpots() {
+        List<DemandedSpotDto> demandedSpots = reservationBl.getDemandedSpots();
+        return ResponseEntity.ok(demandedSpots);
+    }
+
+    @GetMapping("/demanded-parkings")
+    public ResponseEntity<List<DemandedParkingDto>> getDemandedParkings() {
+        List<DemandedParkingDto> demandedParkings = reservationBl.getDemandedParkings();
+        return ResponseEntity.ok(demandedParkings);
+    }
+
+
 
 }

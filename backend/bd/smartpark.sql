@@ -75,19 +75,22 @@ updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 
+-- Truncate tables and restart identities
 TRUNCATE TABLE reservations, vehicles, spots, parkings, roles_has_users, users, roles RESTART IDENTITY CASCADE;
 
-
+-- Insert roles
 INSERT INTO roles (user_role, description, status, created_at) VALUES
 ('ADMIN', 'Administrator role', 1, CURRENT_TIMESTAMP),
 ('USER', 'User role', 1, CURRENT_TIMESTAMP);
 
+-- Insert users
 INSERT INTO users (name, last_name, email, password, pin_code, created_at, updated_at) VALUES
 ('Carlos', 'Nina', 'carlos.nina@ucb.edu.bo', 'password_hash1', '1234', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('Maria', 'Lopez', 'maria.lopez@ucb.edu.bo', 'password_hash2', '5678', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('Juan', 'Perez', 'juan.perez@ucb.edu.bo', 'password_hash3', '9012', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 ('Ana', 'Torres', 'ana.torres@ucb.edu.bo', 'password_hash4', '3456', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
+-- Insert roles for users
 INSERT INTO roles_has_users (roles_id_role, users_id_users, status, created_at) VALUES
 (1, 1, 1, CURRENT_TIMESTAMP),  -- Carlos Nina as ADMIN
 (2, 1, 1, CURRENT_TIMESTAMP),  -- Carlos Nina as USER
@@ -95,11 +98,12 @@ INSERT INTO roles_has_users (roles_id_role, users_id_users, status, created_at) 
 (2, 3, 1, CURRENT_TIMESTAMP),  -- Juan Perez as USER
 (2, 4, 1, CURRENT_TIMESTAMP);  -- Ana Torres as USER
 
+-- Insert parkings
 INSERT INTO parkings (name, location, total_spots, created_at, updated_at) VALUES
-('Parking Central', 'Main St. 123', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('Parking Norte', 'North St. 456', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('Parking Central', 'Obrajes Calle 8', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('Parking Norte', 'Obrajes Calle 2', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- Spots for Parking Central
+-- Insert spots for Parking Central
 INSERT INTO spots (parking_id, spot_number, status, created_at, updated_at) VALUES
 (1, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (1, 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -110,7 +114,7 @@ INSERT INTO spots (parking_id, spot_number, status, created_at, updated_at) VALU
 (1, 7, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (1, 8, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- Spots for Parking Norte
+-- Insert spots for Parking Norte
 INSERT INTO spots (parking_id, spot_number, status, created_at, updated_at) VALUES
 (2, 9, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (2, 10, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -121,17 +125,34 @@ INSERT INTO spots (parking_id, spot_number, status, created_at, updated_at) VALU
 (2, 15, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 (2, 16, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
+-- Insert vehicles
 INSERT INTO vehicles (license_plate, users_id, car_branch, car_model, car_color, car_manufacturing_date, created_at, updated_at) VALUES
 ('ABC123', 1, 'Toyota', 'Corolla', 'Red', 2018, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Carlos Nina
 ('DEF456', 2, 'Honda', 'Civic', 'Blue', 2019, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Maria Lopez
 ('GHI789', 3, 'Ford', 'Focus', 'Black', 2020, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Juan Perez
 ('JKL012', 4, 'Chevrolet', 'Malibu', 'White', 2017, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP); -- Ana Torres
 
--- Reservations for each user, assuming one spot per user for simplicity
-INSERT INTO reservations (users_id, vehicles_id, spots_id, scheduled_entry, scheduled_exit, status, created_at, updated_at) VALUES
-(1, 1, 1, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Carlos Nina
-(2, 2, 2, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Maria Lopez
-(3, 3, 3, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP), -- Juan Perez
-(4, 4, 4, '2024-06-01 08:00:00', '2024-06-01 18:00:00', 'CONFIRMED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP); -- Ana Torres
-
-
+-- Insert reservations
+INSERT INTO reservations (users_id, vehicles_id, spots_id, scheduled_entry, scheduled_exit, actual_entry, actual_exit, status, created_at, updated_at) VALUES
+-- Carlos Nina
+(1, 1, 1, '2024-05-31 08:00:00', '2024-05-31 10:00:00', '2024-05-31 08:10:00', '2024-05-31 10:05:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(1, 1, 2, '2024-05-31 12:00:00', '2024-05-31 14:00:00', '2024-05-31 12:05:00', '2024-05-31 13:55:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+-- Maria Lopez
+(2, 2, 3, '2024-05-31 09:00:00', '2024-05-31 12:00:00', '2024-05-31 09:10:00', '2024-05-31 12:05:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(2, 2, 4, '2024-05-31 15:00:00', '2024-05-31 17:00:00', '2024-05-31 15:05:00', '2024-05-31 17:10:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+-- Juan Perez
+(3, 3, 5, '2024-05-31 11:00:00', '2024-05-31 13:00:00', '2024-05-31 11:15:00', '2024-05-31 13:05:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(3, 3, 6, '2024-05-31 14:00:00', '2024-05-31 16:00:00', '2024-05-31 14:10:00', '2024-05-31 16:05:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+-- Ana Torres
+(4, 4, 7, '2024-05-31 08:30:00', '2024-05-31 10:30:00', '2024-05-31 08:35:00', '2024-05-31 10:25:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(4, 4, 8, '2024-05-31 13:00:00', '2024-05-31 15:00:00', '2024-05-31 13:10:00', '2024-05-31 14:55:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+-- Additional data for today, May 31, 2024
+-- Random reservations to generate peak hours and frequent users data
+(1, 1, 1, '2024-05-31 11:00:00', '2024-05-31 12:00:00', '2024-05-31 11:05:00', '2024-05-31 11:55:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(2, 2, 2, '2024-05-31 14:00:00', '2024-05-31 15:00:00', '2024-05-31 14:05:00', '2024-05-31 14:55:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(3, 3, 3, '2024-05-31 09:00:00', '2024-05-31 11:00:00', '2024-05-31 09:10:00', '2024-05-31 10:50:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(4, 4, 4, '2024-05-31 16:00:00', '2024-05-31 18:00:00', '2024-05-31 16:05:00', '2024-05-31 17:55:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(1, 1, 5, '2024-05-31 08:00:00', '2024-05-31 09:00:00', '2024-05-31 08:10:00', '2024-05-31 08:55:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(2, 2, 6, '2024-05-31 10:00:00', '2024-05-31 11:00:00', '2024-05-31 10:05:00', '2024-05-31 10:55:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(3, 3, 7, '2024-05-31 12:00:00', '2024-05-31 13:00:00', '2024-05-31 12:10:00', '2024-05-31 12:55:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(4, 4, 8, '2024-05-31 14:00:00', '2024-05-31 15:00:00', '2024-05-31 14:10:00', '2024-05-31 14:55:00', 'COMPLETED', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

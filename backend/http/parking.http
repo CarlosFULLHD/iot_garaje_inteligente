@@ -31,8 +31,8 @@ POST http://localhost:8080/api/v1/parkings/spots/update
 Content-Type: application/json
 
 {
-  "spaceId": 1,
-  "status": 1
+  "spaceId": 16,
+  "status": 2
 }
 
 ### Obtener el estado de un spot
