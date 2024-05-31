@@ -37,6 +37,7 @@ public class VehiclesBl {
         return vehicleEntities.stream()
                 .map(this::mapToDto)
                 .collect(java.util.stream.Collectors.toList());
+
     }
 
     @Transactional
@@ -49,7 +50,8 @@ public class VehiclesBl {
             }
 
             VehicleEntity vehicleEntity = new VehicleEntity();
-
+            UserEntity userEntity = new UserEntity();
+            userEntity.setIdUsers(Long.valueOf(request.getIdUsers()));
             vehicleEntity.setLicensePlate(request.getLicensePlate());
             vehicleEntity.setCarBranch(request.getCarBranch());
             vehicleEntity.setCarModel(request.getCarModel());
@@ -61,6 +63,7 @@ public class VehiclesBl {
 
             // Guardar vehículo y obtener el ID generado
             vehicleEntity = vehiclesDao.save(vehicleEntity);
+            userEntity = userDao.findById(Long.valueOf(request.getIdUsers())).get();
             LOG.info("Vehículo guardado con éxito: {}", vehicleEntity.getLicensePlate());
             LOG.info("ID del vehículo guardado: {}", vehicleEntity.getIdVehicles());
 
@@ -91,9 +94,10 @@ public class VehiclesBl {
         List<VehicleEntity> vehicleEntities = vehiclesDao.findByUserEntityIdUsers(vehicleEntity.getIdVehicles());
         List<UsersAndVehiclesResponseDto.VehiclesDto> vehicles = vehicleEntities.stream()
                 .map(this::mapVehiclesDto)
-                .collect(Collectors.toList());
+                .toList();
         return  UsersAndVehiclesResponseDto.builder()
                 .idUser(vehicleEntity.getUserEntity().getIdUsers())
+                //.idUser(vehicleEntity.getUserEntity().getIdUsers())
                 .name(vehicleEntity.getUserEntity().getName())
                 .lastName(vehicleEntity.getUserEntity().getLastName())
                 .carBranch(vehicleEntity.getCarBranch())
