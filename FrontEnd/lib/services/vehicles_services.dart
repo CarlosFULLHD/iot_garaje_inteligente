@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:smartpark/models/register_user_model.dart';
 import 'package:smartpark/models/vehicles_model.dart';
 import 'package:smartpark/services/services.dart';
 import 'package:smartpark/utils/constants.dart';
@@ -18,6 +21,19 @@ class VehiclesServices {
       return vehiclesModelFromJson(response.body);
     }else{
       return [];
+    }
+  }
+
+  Future<bool> addVehicles(RegisterUserModel register) async {
+    final jwt = await _storage.read(key: Constants.ssToken);
+    final data = await services.parseJwtPayLoad(jwt!);
+    register.idUsers = data['userId'];
+    final url = '${Globals.url}/vehicles/register';
+    final response = await services.postHttp(url, jsonEncode(register.toJson()), 0);
+    if(response.statusCode == 201){
+      return true;
+    }else{
+      return false;
     }
   }
 }

@@ -19,6 +19,7 @@ class RegisterUserModel {
   String? carModel;
   String? carColor;
   String? carManufacturingDate;
+  int? idUsers;
 
   RegisterUserModel({
     this.name,
@@ -31,6 +32,7 @@ class RegisterUserModel {
     this.carModel,
     this.carColor,
     this.carManufacturingDate,
+    this.idUsers
   });
 
   factory RegisterUserModel.fromJson(Map<String, dynamic> json) => RegisterUserModel(
@@ -44,6 +46,7 @@ class RegisterUserModel {
     carModel: json["carModel"],
     carColor: json["carColor"],
     carManufacturingDate: json["carManufacturingDate"],
+    idUsers: json["idUsers"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -57,5 +60,6 @@ class RegisterUserModel {
     "carModel": carModel,
     "carColor": carColor,
     "carManufacturingDate": carManufacturingDate,
+    "idUsers": idUsers
   };
 }

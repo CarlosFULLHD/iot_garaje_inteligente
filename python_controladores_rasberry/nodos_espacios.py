@@ -1,4 +1,5 @@
 from machine import Pin
+from Wifi_lib import wifi_init
 import utime
 import urequests
 
@@ -45,8 +46,24 @@ def measure_distance(samples=5, sample_delay=0.1, threshold=50):
 
 # Función para actualizar el estado del espacio
 def update_space_status(space_id, status):
-    url = "http://tu-servidor-api/spaces/update"
-    urequests.post(url, json={"space_id": space_id, "status": status})
+    url = "http://192.168.137.1:8080/api/v1/parkings/spots/update"
+    try:
+        response = urequests.post(url, json={"spaceId": space_id, "status": status})
+        response.close()  # Cerrar la respuesta para liberar memoria
+    except Exception as e:
+        print("Error al actualizar el estado del espacio:", e)
+
+# Función para verificar el estado del espacio
+def check_space_status(space_id):
+    url = f"http://192.168.137.1:8080/api/v1/parkings/spots/{space_id}"
+    try:
+        response = urequests.get(url)
+        data = response.json()
+        response.close()  # Cerrar la respuesta para liberar memoria
+        return data["status"]
+    except Exception as e:
+        print("Error al verificar el estado del espacio:", e)
+        return None
 
 # ID del espacio correspondiente
 space_id = 1  # Configurar esto para cada Raspberry Pi
@@ -59,19 +76,16 @@ while True:
     if distance < 10:  # Si se detecta un vehículo a menos de 10 cm
         ledR.value(1)
         ledG.value(0)
-        update_space_status(space_id, "occupied")
+        ledB.value(0)
+        update_space_status(space_id, "0")
     else:
         ledR.value(0)
         # Verificar si está reservado
-        response = urequests.get(f"http://tu-servidor-api/spaces/{space_id}")
-        data = response.json()
-        if data["status"] == "reserved":
+        status = check_space_status(space_id)
+        if status == 2:
             ledG.value(0)
             ledB.value(1)
         else:
             ledB.value(0)
             ledG.value(1)
-            update_space_status(space_id, "available")
-    
-    utime.sleep(10)  # Esperar 10 segundos antes de la próxima medición
-
+            update_space_status(space_id, "1")

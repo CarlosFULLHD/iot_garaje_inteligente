@@ -15,6 +15,12 @@ class VehiclesView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mis vehiculos', style: TextStyle(color: AppColors.dark, fontSize: 18),),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => vehiclesProvider.goToAddVehicles(context),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

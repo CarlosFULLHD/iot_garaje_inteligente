@@ -6,6 +6,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:smartpark/providers/auth_provider.dart';
 import 'package:smartpark/providers/parking_provider.dart';
 import 'package:smartpark/providers/vehicles_provider.dart';
+import 'package:smartpark/views/add_vehicles_view.dart';
 import 'package:smartpark/views/home_view.dart';
 import 'package:smartpark/views/login_view.dart';
 import 'package:smartpark/views/sign_up_view.dart';
@@ -19,6 +20,11 @@ class AppRoutes {
     navigatorKey: rootNavigatorKey,
     debugLogDiagnostics: kDebugMode,
     routes: [
+      GoRoute(
+        name: AddVehiclesView.routerName,
+        path: AddVehiclesView.routerPath,
+        builder: (context, state) => const AddVehiclesView(),
+      ),
       GoRoute(
         name: HomeView.routerName,
         path: HomeView.routerPath,
