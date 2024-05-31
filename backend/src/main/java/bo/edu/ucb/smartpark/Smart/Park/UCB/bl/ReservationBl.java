@@ -8,7 +8,7 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.ReservationDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.SpotDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.UserDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.VehiclesDao;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ReservationDetailsDto;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.*;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ReservationRequestDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpotResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -122,6 +123,65 @@ public class ReservationBl {
     }
 
 
+    public List<EntryExitDifferenceDto> getEntryExitDifferences() {
+        return reservationDao.findAll().stream()
+                .map(this::mapToEntryExitDifferenceDto)
+                .collect(Collectors.toList());
+    }
+
+    private EntryExitDifferenceDto mapToEntryExitDifferenceDto(ReservationEntity reservationEntity) {
+        Duration entryDifference = null;
+        Duration exitDifference = null;
+
+        if (reservationEntity.getActualEntry() != null) {
+            entryDifference = Duration.between(reservationEntity.getScheduledEntry(), reservationEntity.getActualEntry());
+        }
+
+        if (reservationEntity.getActualExit() != null) {
+            exitDifference = Duration.between(reservationEntity.getScheduledExit(), reservationEntity.getActualExit());
+        }
+
+        return EntryExitDifferenceDto.builder()
+                .reservationId(reservationEntity.getIdRes())
+                .entryDifference(entryDifference)
+                .exitDifference(exitDifference)
+                .build();
+    }
+    public long countUnutilizedReservations() {
+        return reservationDao.countByActualEntryIsNullAndActualExitIsNull();
+    }
+
+    public double calculateLateExitsPercentage() {
+        long totalReservations = reservationDao.count();
+        long lateExits = reservationDao.countByActualExitAfterScheduledExit();
+        return totalReservations > 0 ? (double) lateExits / totalReservations * 100 : 0;
+    }
+    public List<PeakHourDto> getPeakHours() {
+        List<Object[]> peakHourResults = reservationDao.findPeakHours();
+        return peakHourResults.stream()
+                .map(result -> new PeakHourDto((LocalDateTime) result[0], ((Number) result[1]).longValue()))
+                .collect(Collectors.toList());
+    }
+
+    public List<FrequentUserDto> getFrequentUsers() {
+        return reservationDao.findFrequentUsers().stream()
+                .map(result -> new FrequentUserDto((Long) result[0], (Long) result[1]))
+                .collect(Collectors.toList());
+    }
+
+    public List<DemandedSpotDto> getDemandedSpots() {
+        return reservationDao.findSpotDemand()
+                .stream()
+                .map(result -> new DemandedSpotDto((Long) result[0], (Long) result[1]))
+                .collect(Collectors.toList());
+    }
+
+    public List<DemandedParkingDto> getDemandedParkings() {
+        return reservationDao.findParkingDemand()
+                .stream()
+                .map(result -> new DemandedParkingDto((Long) result[0], (Long) result[1]))
+                .collect(Collectors.toList());
+    }
 
 
 }

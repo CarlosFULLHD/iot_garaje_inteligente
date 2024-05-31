@@ -1,0 +1,29 @@
+### Obtener diferencias entre horas de entrada y salida
+GET http://localhost:8080/api/v1/parkings/reservations/entry-exit-differences
+Content-Type: application/json
+
+### Contar reservas no utilizadas
+GET http://localhost:8080/api/v1/parkings/reservations/unutilized
+Content-Type: application/json
+
+### Calcular porcentaje de salidas tardías
+GET http://localhost:8080/api/v1/parkings/reservations/late-exits-percentage
+Content-Type: application/json
+
+### Ocupación del Parqueo
+GET http://localhost:8080/api/v1/parkings/peak-hours
+Content-Type: application/json
+
+### Obtener usuarios más frecuentes
+GET http://localhost:8080/api/v1/parkings/users/frequent-users
+Content-Type: application/json
+
+### Demanda de Espacios
+GET http://localhost:8080/api/v1/parkings/demanded-spots
+Content-Type: application/json
+
+### Obtener estacionamientos más demandados
+GET http://localhost:8080/api/v1/parkings/demanded-parkings
+Content-Type: application/json
+
+
