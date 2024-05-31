@@ -7,7 +7,6 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.VehicleEntity;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.ReservationDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.SpotDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.UserDao;
-
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.VehiclesDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ReservationRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +34,10 @@ public class ReservationBl {
 
         SpotEntity spotEntity = spotDao.findById(reservationRequestDto.getSpotId())
                 .orElseThrow(() -> new RuntimeException("Spot not found"));
+
+        // Actualizar el estado del spot a reservado
+        spotEntity.setStatus(2);
+        spotDao.save(spotEntity);
 
         ReservationEntity reservationEntity = ReservationEntity.builder()
                 .userEntity(userEntity)

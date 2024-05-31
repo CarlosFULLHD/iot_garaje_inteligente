@@ -7,7 +7,6 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.SpotDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ParkingAndSpotsResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpaceStatusUpdateDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpotResponseDto;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -47,9 +46,6 @@ public class ParkingBl {
         spotDao.save(spotEntity);
     }
 
-
-
-
     private ParkingAndSpotsResponseDto mapToDto(ParkingEntity parkingEntity) {
         List<SpotEntity> spotEntities = spotDao.findByParkingEntity_IdPar(parkingEntity.getIdPar());
         List<ParkingAndSpotsResponseDto.SpotDto> spots = spotEntities.stream()
@@ -86,6 +82,4 @@ public class ParkingBl {
                 .updatedAt(spotEntity.getUpdatedAt())
                 .build();
     }
-
-
 }

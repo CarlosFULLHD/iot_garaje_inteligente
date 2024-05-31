@@ -19,7 +19,7 @@ Content-Type: application/json
 {
   "userId": 1,
   "vehicleId": 1,
-  "spotId": 1,
+  "spotId": 8,
   "scheduledEntry": "2024-06-01T08:00:00",
   "scheduledExit": "2024-06-01T10:00:00"
 }
