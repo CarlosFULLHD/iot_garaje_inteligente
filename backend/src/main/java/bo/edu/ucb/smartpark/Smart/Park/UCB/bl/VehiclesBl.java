@@ -6,7 +6,9 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.UserDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.VehiclesDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.UnsuccessfulResponse;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.UsersAndVehiclesResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.RegisterVehicleRequest;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.VehiclesResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.util.Globals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VehiclesBl {
@@ -26,6 +30,13 @@ public class VehiclesBl {
     public VehiclesBl(VehiclesDao vehiclesDao, UserDao userDao) {
         this.vehiclesDao = vehiclesDao;
         this.userDao = userDao;
+    }
+
+    public List<UsersAndVehiclesResponseDto> getAllVehicles(){
+        List<VehicleEntity> vehicleEntities = vehiclesDao.findAll();
+        return vehicleEntities.stream()
+                .map(this::mapToDto)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Transactional
@@ -69,5 +80,48 @@ public class VehiclesBl {
             LOG.error("Error al registrar el vehículo: {}", e.getMessage());
             return new UnsuccessfulResponse(Globals.httpInternalServerErrorStatus[0], Globals.httpInternalServerErrorStatus[1], "Internal server error");
         }
+    }
+    public List<VehiclesResponseDto>getVehiclesByUserId(Long userId){
+        List<VehicleEntity> vehicleEntities = vehiclesDao.findByUserEntityIdUsers(userId);
+        return vehicleEntities.stream()
+                .map(this::mapToDtoResponseDto)
+                .collect(java.util.stream.Collectors.toList());
+    }
+    private UsersAndVehiclesResponseDto mapToDto(VehicleEntity vehicleEntity){
+        List<VehicleEntity> vehicleEntities = vehiclesDao.findByUserEntityIdUsers(vehicleEntity.getIdVehicles());
+        List<UsersAndVehiclesResponseDto.VehiclesDto> vehicles = vehicleEntities.stream()
+                .map(this::mapVehiclesDto)
+                .collect(Collectors.toList());
+        return  UsersAndVehiclesResponseDto.builder()
+                .idUser(vehicleEntity.getUserEntity().getIdUsers())
+                .name(vehicleEntity.getUserEntity().getName())
+                .lastName(vehicleEntity.getUserEntity().getLastName())
+                .carBranch(vehicleEntity.getCarBranch())
+                .carModel(vehicleEntity.getCarModel())
+                .carColor(vehicleEntity.getCarColor())
+                .carManufacturingDate(vehicleEntity.getCarManufacturingDate())
+                .build();
+    }
+
+    private UsersAndVehiclesResponseDto.VehiclesDto mapVehiclesDto(VehicleEntity vehicleEntity) {
+        return UsersAndVehiclesResponseDto.VehiclesDto.builder()
+                .idVehicles(vehicleEntity.getIdVehicles())
+                .licensePlate(vehicleEntity.getLicensePlate())
+                .carBranch(vehicleEntity.getCarBranch())
+                .carModel(vehicleEntity.getCarModel())
+                .carColor(vehicleEntity.getCarColor())
+                .carManufacturingDate(vehicleEntity.getCarManufacturingDate())
+                .build();
+    }
+
+    private VehiclesResponseDto mapToDtoResponseDto(VehicleEntity vehicleEntity){
+        return VehiclesResponseDto.builder()
+                .idVehicles(vehicleEntity.getIdVehicles())
+                .licensePlate(vehicleEntity.getLicensePlate())
+                .carBranch(vehicleEntity.getCarBranch())
+                .carModel(vehicleEntity.getCarModel())
+                .carColor(vehicleEntity.getCarColor())
+                .carManufacturingDate(vehicleEntity.getCarManufacturingDate())
+                .build();
     }
 }
