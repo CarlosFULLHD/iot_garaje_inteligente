@@ -1,10 +1,9 @@
-// lib/views/login_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:smartpark/providers/auth_provider.dart';
 import 'package:smartpark/style/colors.dart';
+import 'package:smartpark/widgets/RotatingLoginCircle.dart';
 import 'package:smartpark/widgets/custom_button.dart';
 import 'package:smartpark/widgets/custom_field.dart';
 
@@ -12,6 +11,25 @@ class LoginView extends StatelessWidget {
   static const String routerName = 'login';
   static const String routerPath = '/';
   const LoginView({super.key});
+
+  Future<void> _showLoginAnimation(BuildContext context) async {
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) {
+        return Center(
+          child: RotatingLoginCircle(),
+        );
+      },
+    );
+
+    // Insertar el overlay entry
+    Overlay.of(context)!.insert(overlayEntry);
+
+    // Esperar un poco para mostrar la animación
+    await Future.delayed(Duration(seconds: 2));
+
+    // Eliminar el overlay entry
+    overlayEntry.remove();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +64,17 @@ class LoginView extends StatelessWidget {
                   hintText: 'Contraseña',
                   keyboardType: TextInputType.text,
                   label: 'Contraseña',
-                  prefixIcon: const Icon(Icons.email),
+                  prefixIcon: const Icon(Icons.lock),
                 ),
                 const SizedBox(height: 32),
                 CustomButton(
                   label: 'Iniciar sesión', 
-                  onPressed: () => authProvider.goHome(context),
+                  onPressed: () async {
+                    // Mostrar animación de login
+                    await _showLoginAnimation(context);
+                    // Redirigir a la pantalla de inicio
+                    authProvider.goHome(context);
+                  },
                 ),
                 const SizedBox(height: 16),
                 GestureDetector(
@@ -67,7 +90,7 @@ class LoginView extends StatelessWidget {
                         )
                       ]
                     )
-                    ),
+                  ),
                 ),
               ],
             ),

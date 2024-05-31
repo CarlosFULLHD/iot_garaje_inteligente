@@ -7,6 +7,8 @@ import 'package:smartpark/views/space_view.dart';
 import 'package:smartpark/views/vehicles_view.dart';
 
 class ParkingProvider extends ChangeNotifier {
+  get vehicles => null;
+
   Future<List<ParkingModel>> getParkings() async {
     return ParkingService().getParkings();
   }

@@ -10,7 +10,8 @@ import 'package:smartpark/utils/globals.dart';
 class VehiclesServices {
   final _storage = const FlutterSecureStorage();
   final services = Services();
-
+    //  obtniendo los vehiculos por usuario de 15 a 18
+  
   Future<List<VehiclesModel>> getVehicles() async {
     final jwt = await _storage.read(key: Constants.ssToken);
     final data = await services.parseJwtPayLoad(jwt!);
@@ -36,4 +37,7 @@ class VehiclesServices {
       return false;
     }
   }
+
+  // Obtner los vehiculos por usuario
+  
 }
