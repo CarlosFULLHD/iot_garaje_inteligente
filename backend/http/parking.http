@@ -34,3 +34,18 @@ Content-Type: application/json
   "spaceId": 1,
   "status": 1
 }
+
+### Obtener detalles de una reserva específica
+GET http://localhost:8080/api/v1/parkings/reservations/{reservationId}
+### Obtener detalles de una reserva específica
+GET http://localhost:8080/api/v1/parkings/reservations/3
+
+### Cancelar una reserva
+DELETE http://localhost:8080/api/v1/parkings/reservations/{reservationId}
+### Cancelar una reserva
+DELETE http://localhost:8080/api/v1/parkings/reservations/1
+
+### Obtener todas las reservas de un usuario
+GET http://localhost:8080/api/v1/parkings/users/{userId}/reservations
+### Obtener todas las reservas de un usuario
+GET http://localhost:8080/api/v1/parkings/users/1/reservations
