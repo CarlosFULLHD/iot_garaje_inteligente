@@ -53,6 +53,9 @@ public class ParkingApi {
         parkingBl.updateSpaceStatus(spaceStatusUpdateDto);
         return ResponseEntity.ok("Space status updated successfully");
     }
+
+
+
     // Obtener detalles de una reserva específica
     @GetMapping("/reservations/{reservationId}")
     public ResponseEntity<ReservationDetailsDto> getReservationDetails(@PathVariable Long reservationId) {

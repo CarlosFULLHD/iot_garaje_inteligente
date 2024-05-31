@@ -29,6 +29,10 @@ public class ReservationBl {
     private final VehiclesDao vehiclesDao;
     private final SpotDao spotDao;
 
+
+
+
+
     public ReservationDetailsDto getReservationDetails(Long reservationId) {
         ReservationEntity reservationEntity = reservationDao.findById(reservationId)
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
@@ -116,5 +120,8 @@ public class ReservationBl {
                 .updatedAt(spotEntity.getUpdatedAt())
                 .build();
     }
+
+
+
 
 }
