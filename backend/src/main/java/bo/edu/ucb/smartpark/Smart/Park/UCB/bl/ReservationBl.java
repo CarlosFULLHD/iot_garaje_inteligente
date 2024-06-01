@@ -106,8 +106,9 @@ public class ReservationBl {
                 .updatedAt(reservationEntity.getUpdatedAt())
                 .build();
     }
-    public SpotResponseDto getSpaceStatus(Long spaceId) {
-        SpotEntity spotEntity = spotDao.findById(spaceId)
+    public SpotResponseDto getSpaceStatus(Long spotId) {
+        LOG.info("ingresando al Bl con " + spotId);
+        SpotEntity spotEntity = spotDao.findById(spotId)
                 .orElseThrow(() -> new RuntimeException("Spot not found"));
         return mapToSpotResponseDto(spotEntity);
     }

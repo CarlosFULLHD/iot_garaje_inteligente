@@ -1,5 +1,7 @@
 server:
+  address: 0.0.0.0 # Esto asegurará que el servidor escuche en todas las interfaces de red
   port: 8080
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
