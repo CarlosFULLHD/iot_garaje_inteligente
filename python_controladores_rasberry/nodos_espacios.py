@@ -46,7 +46,7 @@ def measure_distance(samples=5, sample_delay=0.1, threshold=50):
 
 # Función para actualizar el estado del espacio
 def update_space_status(space_id, status):
-    url = "http://192.168.137.1:8080/api/v1/parkings/spots/update"
+    url = "http://192.168.41.78:8080/api/v1/parkings/spots/update"
     try:
         response = urequests.post(url, json={"spaceId": space_id, "status": status})
         response.close()  # Cerrar la respuesta para liberar memoria
@@ -55,7 +55,7 @@ def update_space_status(space_id, status):
 
 # Función para verificar el estado del espacio
 def check_space_status(space_id):
-    url = f"http://192.168.137.1:8080/api/v1/parkings/spots/{space_id}"
+    url = f"http://192.168.41.78:8080/api/v1/parkings/spots/{space_id}"
     try:
         response = urequests.get(url)
         data = response.json()
@@ -89,3 +89,6 @@ while True:
             ledB.value(0)
             ledG.value(1)
             update_space_status(space_id, "1")
+    
+    utime.sleep(10)  # Esperar 10 segundos antes de la próxima medición
+
