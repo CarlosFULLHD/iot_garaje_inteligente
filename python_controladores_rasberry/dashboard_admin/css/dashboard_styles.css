@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@100..800&display=swap');
+
+body {
+    background-color: #2e2e2e;
+    color: #ffffff;
+    font-family: "Anek Devanagari", sans-serif;
+}
+
+.bk-root .bk-widget {
+    background: #2e2e2e;
+    border: 1px solid #3e3e3e;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.bk-root .bk-plot-title {
+    color: #ffffff;
+    font-size: 18pt;
+    font-weight: bold;
+}
+
+.bk-root .bk-axis-label {
+    color: #ffffff;
+}
+
+.bk-root .bk-axis-major-label {
+    color: #aaaaaa;
+}
+
+.bk-root .bk-legend-label {
+    color: #ffffff;
+}
+
+.card {
+    background: #3e3e3e;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.card-header-icon {
+    width: 40px;  /* Increased size */
+    height: 40px;  /* Increased size */
+    margin-right: 10px;  /* Reduced margin */
+}
+
+.card-header-title {
+    font-size: 18pt;
+    font-weight: bold;
+    font-family: "Anek Devanagari", sans-serif;
+    color: #ffffff;
+    text-align: center;
+}
+
+.card-content {
+    color: #ffffff;
+    text-align: center;
+    font-size: 14pt;  /* Increased text size */
+}
+
+.small-card {
+    width: 300px;
+    height: 200px;  /* Ensure small cards have the same height */
+}
+
+.small-card-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.update-button-container {
+    display: flex;
+    justify-content: flex-end;  /* Align to the right */
+    margin: 20px 0 10px 0;  /* Add top and bottom margins */
+    width: 100%;  /* Ensure it takes the full width */
+}
+
+.bk-btn-primary {
+    width: 150px !important;  /* Adjust width */
+    margin-right: 10px;  /* Add some space to the right */
+    border: 2px solid white !important;  /* Thicker white border */
+    border-radius: 15px !important;  /* More border radius */
+    background-color: #84a9cd !important;  /* Initial background color */
+    color: white !important;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease !important;  /* Smooth transition */
+}
+
+.bk-btn-primary:hover {
+    background-color: #97c5d8 !important;  /* Change color on hover */
+    box-shadow: 0 0 15px #97c5d8 !important;  /* Add glow effect */
+}
+
+.bk-btn-primary:active {
+    background-color: #6ea4b8 !important;  /* Change color on click */
+}
