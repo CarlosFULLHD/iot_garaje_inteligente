@@ -1,4 +1,4 @@
-# SmartPark - Documentación
+# SmartPark - Sistema de Garaje IOT
 
 ![SmartPark Logo](link_to_logo_image)
 
@@ -12,6 +12,8 @@ Para ejecutar la base de datos en un contenedor Docker, utiliza el siguiente com
 
 ```bash
 docker run -d --name smartpark_c -e POSTGRES_PASSWORD=12345 -e POSTGRES_USER=admin -e POSTGRES_DB=smartpark_db -p 5432:5432 postgres:15.3
+```
+
 
 # Versiones Utilizadas
 - **Flutter**: 3.19.6
