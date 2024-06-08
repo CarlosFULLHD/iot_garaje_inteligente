@@ -39,8 +39,3 @@ Content-Type: application/json
 }
 
 
-### Obtener la Actividad del Usuario
-GET http://localhost:8080/api/v1/users/activity/{userId}
-### Ejemplo:
-GET http://localhost:8080/api/v1/users/activity/1
-

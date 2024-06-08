@@ -4,6 +4,7 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.bl.VehiclesBl;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.UsersAndVehiclesResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.RegisterVehicleRequest;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.VehicleUsageStatsResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.VehiclesResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.util.Globals;
 import jakarta.validation.Valid;
@@ -46,6 +47,13 @@ public class VehiclesApi {
         LOG.info("Obteniendo vehículos del usuario con id: {}", userId);
         List<VehiclesResponseDto> response = vehiclesBl.getVehiclesByUserId(userId);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{vehicleId}/stats")
+    public ResponseEntity<VehicleUsageStatsResponse> getVehicleUsageStats(@PathVariable int vehicleId) {
+        LOG.info("Obteniendo estadísticas de uso para el vehículo con ID: {}", vehicleId);
+        VehicleUsageStatsResponse stats = vehiclesBl.getVehicleUsageStats(vehicleId);
+        return ResponseEntity.ok(stats);
     }
 
 }
