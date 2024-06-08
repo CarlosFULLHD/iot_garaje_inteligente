@@ -9,9 +9,7 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.UnsuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.AuthLoginrequest;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.RegisterUserRequest;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.VerifyPinRequestDto;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.ActivityUserResponse;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.AuthResponse;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.VerifyPinResponseDto;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.*;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.util.Globals;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -71,5 +69,10 @@ public class UsersApi {
         return ResponseEntity.ok(activity);
     }
 
-
+    @GetMapping("/{userId}/vehicles")
+    public ResponseEntity<List<VehiclesActivityResponseDto>> getUserVehicles(@PathVariable int userId) {
+        LOG.info("Obteniendo vehículos para el usuario con ID: {}", userId);
+        List<VehiclesActivityResponseDto> vehicles = usersBl.getUserVehicles(userId);
+        return ResponseEntity.ok(vehicles);
+    }
 }

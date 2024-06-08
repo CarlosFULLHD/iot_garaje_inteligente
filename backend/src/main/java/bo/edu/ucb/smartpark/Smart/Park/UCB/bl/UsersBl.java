@@ -6,6 +6,8 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.UnsuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.RegisterUserRequest;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.ActivityUserResponse;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.VehiclesActivityResponseDto;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.VehiclesResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.util.Globals;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -138,6 +140,40 @@ public class UsersBl {
         response.setActualExit(reservation.getActualExit());
         response.setStatus(reservation.getStatus());
         return response;
+    }
+
+    public List<VehiclesActivityResponseDto> getUserVehicles(int userId) {
+        List<VehicleEntity> vehicles = vehiclesDao.findByUserEntity_IdUsers(userId);
+        return vehicles.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    private VehiclesActivityResponseDto mapToDto(VehicleEntity vehicleEntity) {
+        List<ReservationEntity> reservations = reservationDao.findByVehicleEntity_IdVehicles(Math.toIntExact(vehicleEntity.getIdVehicles()));
+        int totalReservations = reservations.size();
+        double totalHoursUsed = calculateTotalHoursUsed(reservations);
+
+        return VehiclesActivityResponseDto.builder()
+                .idVehicles(vehicleEntity.getIdVehicles())
+                .licensePlate(vehicleEntity.getLicensePlate())
+                .carBranch(vehicleEntity.getCarBranch())
+                .carModel(vehicleEntity.getCarModel())
+                .carColor(vehicleEntity.getCarColor())
+                .carManufacturingDate(vehicleEntity.getCarManufacturingDate())
+                .totalReservations(totalReservations)
+                .totalHoursUsed(totalHoursUsed)
+                .build();
+    }
+
+    private double calculateTotalHoursUsed(List<ReservationEntity> reservations) {
+        double totalHours = 0;
+        for (ReservationEntity reservation : reservations) {
+            if (reservation.getActualEntry() != null && reservation.getActualExit() != null) {
+                long diffInMillies = Math.abs(reservation.getActualExit().getHour() - reservation.getActualEntry().getHour());
+                double diffInHours = diffInMillies / (1000.0 * 60 * 60);
+                totalHours += diffInHours;
+            }
+        }
+        return totalHours;
     }
 
 }

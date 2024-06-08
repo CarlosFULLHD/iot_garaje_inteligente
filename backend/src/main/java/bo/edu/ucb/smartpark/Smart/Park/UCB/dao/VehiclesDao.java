@@ -13,4 +13,6 @@ public interface VehiclesDao extends JpaRepository<VehicleEntity, Long> {
     Optional<VehicleEntity> findByLicensePlate(String licensePlate);
 
     List<VehicleEntity> findByUserEntityIdUsers(Long userId);
+
+    List<VehicleEntity> findByUserEntity_IdUsers(int userId);
 }

@@ -3,11 +3,11 @@ POST http://localhost:8080/api/v1/vehicles/register
 Content-Type: application/json
 
 {
-  "licensePlate": "6374DDD",
-  "carBranch": "Toyota",
-  "carModel": "Corolla",
+  "licensePlate": "1234AVD",
+  "carBranch": "Toyota2",
+  "carModel": "Corolla2",
   "carColor": "Rojo",
-  "carManufacturingDate":"2019",
+  "carManufacturingDate":"2024",
   "idUsers": 1
 
 }
@@ -15,4 +15,4 @@ Content-Type: application/json
 GET http://localhost:8080/api/v1/vehicles
 
 ### Probar endpoint:
-GET http://localhost:8080/api/v1/vehicles/4/vehicles
+GET http://localhost:8080/api/v1/vehicles/1/vehicles
