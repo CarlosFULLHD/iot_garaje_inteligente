@@ -48,6 +48,7 @@ GET http://localhost:8080/api/v1/users/1/vehicles
 GET http://localhost:8080/api/v1/parkings/spots/{spotId}/stats
 Content-Type: application/json
 ### Ejemplo:
+GET http://localhost:8080/api/v1/parkings/spots/1/stats
+
+### Obtener el total de reservas y horas ocupadas de un spot, por parkeo sy mostrando cada spot
 GET http://localhost:8080/api/v1/parkings/spots/stats
-
-

@@ -35,4 +35,7 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
     List<ReservationEntity> findByVehicleEntity_IdVehicles(int vehicleId);
 
     List<ReservationEntity> findBySpotEntity_IdSpots(int spotId);
+
+    List<ReservationEntity> findBySpotEntity_IdSpots(Long idSpots);
+
 }
