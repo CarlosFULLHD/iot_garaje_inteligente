@@ -1,16 +1,11 @@
 package bo.edu.ucb.smartpark.Smart.Park.UCB.bl;
 
-import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.UserEntity;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.VehicleEntity;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.RolesHasUsersEntity;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.RoleEntity;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.UserDao;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.VehiclesDao;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.RolesDao;
-import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.RolesHasUsersDao;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.*;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.*;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.UnsuccessfulResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.request.RegisterUserRequest;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.ActivityUserResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.util.Globals;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -19,7 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersBl {
@@ -29,14 +26,16 @@ public class UsersBl {
     private final RolesDao rolesDao;
     private final RolesHasUsersDao rolesHasUsersDao;
     private final PasswordEncoder passwordEncoder;
+    private final ReservationDao reservationDao;
     private static final Logger LOG = LoggerFactory.getLogger(UsersBl.class);
 
-    public UsersBl(UserDao userDao, VehiclesDao vehiclesDao, RolesDao rolesDao, RolesHasUsersDao rolesHasUsersDao, PasswordEncoder passwordEncoder) {
+    public UsersBl(UserDao userDao, VehiclesDao vehiclesDao, RolesDao rolesDao, RolesHasUsersDao rolesHasUsersDao, PasswordEncoder passwordEncoder, ReservationDao reservationDao) {
         this.userDao = userDao;
         this.vehiclesDao = vehiclesDao;
         this.rolesDao = rolesDao;
         this.rolesHasUsersDao = rolesHasUsersDao;
         this.passwordEncoder = passwordEncoder;
+        this.reservationDao = reservationDao;
     }
 
     @Transactional
@@ -121,4 +120,24 @@ public class UsersBl {
     public boolean verifyPin(String pin) {
         return userDao.existsByPinCode(pin);
     }
+
+    public List<ActivityUserResponse> getUserActivity(int userId) {
+        List<ReservationEntity> reservations = reservationDao.findByUserEntity_IdUsers(userId);
+        return reservations.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    private ActivityUserResponse convertToDto(ReservationEntity reservation) {
+        ActivityUserResponse response = new ActivityUserResponse();
+        response.setIdReservation(reservation.getIdRes());
+        response.setUserId(reservation.getUserEntity().getIdUsers());
+        response.setVehicleId(reservation.getVehicleEntity().getIdVehicles());
+        response.setSpotId(reservation.getSpotEntity().getIdSpots());
+        response.setScheduledEntry(reservation.getScheduledEntry());
+        response.setScheduledExit(reservation.getScheduledExit());
+        response.setActualEntry(reservation.getActualEntry());
+        response.setActualExit(reservation.getActualExit());
+        response.setStatus(reservation.getStatus());
+        return response;
+    }
+
 }

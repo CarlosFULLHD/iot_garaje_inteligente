@@ -29,4 +29,6 @@ public interface ReservationDao extends JpaRepository<ReservationEntity, Long> {
 
     @Query("SELECT r.userEntity.idUsers, COUNT(r) as count FROM ReservationEntity r GROUP BY r.userEntity.idUsers ORDER BY count DESC")
     List<Object[]> findFrequentUsers();
+
+    List<ReservationEntity> findByUserEntity_IdUsers(int userId);
 }
