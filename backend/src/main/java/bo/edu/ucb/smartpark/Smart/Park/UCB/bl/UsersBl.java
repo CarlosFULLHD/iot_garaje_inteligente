@@ -64,6 +64,18 @@ public class UsersBl {
             LOG.info("Usuario guardado con éxito: {}", userEntity.getEmail());
             LOG.info("ID del usuario guardado: {}", userEntity.getIdUsers());
 
+            // Asignar rol "USER" al nuevo usuario
+            RoleEntity userRole = rolesDao.findByUserRole("USER")
+                    .orElseThrow(() -> new IllegalStateException("Rol USER no encontrado"));
+
+            RolesHasUsersEntity rolesHasUsersEntity = new RolesHasUsersEntity();
+            rolesHasUsersEntity.setUserEntity(userEntity);
+            rolesHasUsersEntity.setRoleEntity(userRole);
+            rolesHasUsersEntity.setStatus((short) 1);
+            rolesHasUsersEntity.setCreatedAt(LocalDateTime.now());
+            rolesHasUsersDao.save(rolesHasUsersEntity);
+            LOG.info("Rol USER asignado con éxito al usuario: {}", userEntity.getEmail());
+
             // Crear nueva entidad de vehículo
             VehicleEntity vehicleEntity = new VehicleEntity();
             vehicleEntity.setLicensePlate(request.getLicensePlate());
@@ -74,7 +86,6 @@ public class UsersBl {
             vehicleEntity.setUserEntity(userEntity);
             vehicleEntity.setCreatedAt(LocalDateTime.now());
             vehicleEntity.setUpdatedAt(LocalDateTime.now());
-
 
             // Guardar vehículo
             vehiclesDao.save(vehicleEntity);

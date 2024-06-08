@@ -2,14 +2,16 @@ package bo.edu.ucb.smartpark.Smart.Park.UCB.bl;
 
 import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.UserEntity;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.RolesHasUsersEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-
+import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
+    private static final Logger LOG = LoggerFactory.getLogger(CustomUserDetails.class);
 
     private final UserEntity userEntity;
     private final Collection<? extends GrantedAuthority> authorities;
@@ -36,9 +38,11 @@ public class CustomUserDetails implements UserDetails {
     public String getUserRole() {
         for (RolesHasUsersEntity roleUser : userEntity.getRolesHasUsers()) {
             if (roleUser.getStatus() == 1) {  // Estado activo
+                LOG.info("Rol encontrado para el usuario {}: {}", userEntity.getEmail(), roleUser.getRoleEntity().getUserRole());
                 return roleUser.getRoleEntity().getUserRole();
             }
         }
+        LOG.warn("No se encontró un rol activo para el usuario: {}", userEntity.getEmail());
         return null; // O lanzar una excepción si no se encuentra un rol activo
     }
 
