@@ -7,6 +7,7 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ParkingAndSpotsResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ReservationRequestDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpotResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.ParkingResponse;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.SpotUsageStatsResponse;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.util.Globals;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,6 +122,13 @@ public class ParkingApi {
     public ResponseEntity<List<DemandedParkingDto>> getDemandedParkings() {
         List<DemandedParkingDto> demandedParkings = reservationBl.getDemandedParkings();
         return ResponseEntity.ok(demandedParkings);
+    }
+
+    @GetMapping("/spots/{spotId}/stats")
+    public ResponseEntity<SpotUsageStatsResponse> getSpotUsageStats(@PathVariable int spotId) {
+        LOG.info("Obteniendo estadísticas de uso para el espacio con ID: {}", spotId);
+        SpotUsageStatsResponse stats = parkingBl.getSpotUsageStats(spotId);
+        return ResponseEntity.ok(stats);
     }
 
 

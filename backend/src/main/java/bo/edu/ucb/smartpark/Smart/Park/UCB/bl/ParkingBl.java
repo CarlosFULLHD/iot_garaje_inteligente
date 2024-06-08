@@ -9,6 +9,7 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.SpotDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ParkingAndSpotsResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpaceStatusUpdateDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpotResponseDto;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.SpotUsageStatsResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -109,5 +110,27 @@ public class ParkingBl {
                 .status(spotEntity.getStatus())
                 .updatedAt(spotEntity.getUpdatedAt())
                 .build();
+    }
+
+
+
+    public SpotUsageStatsResponse getSpotUsageStats(int spotId) {
+        List<ReservationEntity> reservations = reservationDao.findBySpotEntity_IdSpots(spotId);
+        SpotUsageStatsResponse stats = new SpotUsageStatsResponse();
+        stats.setTotalReservations(reservations.size());
+        stats.setTotalHoursOccupied(calculateTotalHoursOccupied(reservations));
+        return stats;
+    }
+
+    private double calculateTotalHoursOccupied(List<ReservationEntity> reservations) {
+        double totalHours = 0;
+        for (ReservationEntity reservation : reservations) {
+            if (reservation.getActualEntry() != null && reservation.getActualExit() != null) {
+                long diffInMillies = Math.abs(reservation.getActualExit().getHour() - reservation.getActualEntry().getHour());
+                double diffInHours = diffInMillies / (1000.0 * 60 * 60);
+                totalHours += diffInHours;
+            }
+        }
+        return totalHours;
     }
 }
