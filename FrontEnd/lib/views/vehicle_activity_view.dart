@@ -39,6 +39,12 @@ class VehicleActivityView extends StatelessWidget {
                       child: BarChartSample(createBarChartData(activities)),
                     ),
                     SizedBox(height: 16),
+                    Center(child: Text('Tendencia de Uso', style: Theme.of(context).textTheme.headlineSmall)),
+                    Container(
+                      height: 200,
+                      child: LineChartSample(createLineChartData(activities)),
+                    ),
+                    SizedBox(height: 16),
                     Center(child: Text('Detalles de Actividad', style: Theme.of(context).textTheme.headlineSmall)),
                     buildDetailCards(context, activities),
                   ],
@@ -72,6 +78,25 @@ class VehicleActivityView extends StatelessWidget {
         data: data,
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(Color(0xFFB8E0E3)),
       )
+    ];
+  }
+
+  List<charts.Series<ReservationTime, DateTime>> createLineChartData(List<UserActivityModel> activities) {
+    final List<ReservationTime> data = [];
+
+    for (var activity in activities) {
+      final date = DateTime.parse(activity.scheduledEntry);
+      data.add(ReservationTime(date, 1));
+    }
+
+    return [
+      charts.Series<ReservationTime, DateTime>(
+        id: 'Tendencia',
+        domainFn: (ReservationTime time, _) => time.date,
+        measureFn: (ReservationTime time, _) => time.count,
+        data: data,
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Color(0xFF97C5D8)),
+      ),
     ];
   }
 
@@ -123,9 +148,36 @@ class BarChartSample extends StatelessWidget {
   }
 }
 
+class LineChartSample extends StatelessWidget {
+  final List<charts.Series<dynamic, DateTime>> seriesList;
+  final bool animate;
+
+  LineChartSample(this.seriesList, {this.animate = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return charts.TimeSeriesChart(
+      seriesList,
+      animate: animate,
+    );
+  }
+}
+
 class Reservation {
   final String date;
   final int count;
 
   Reservation(this.date, this.count);
+}
+
+class ReservationTime {
+  final DateTime date;
+  final int count;
+
+  ReservationTime(this.date, this.count);
+
+  @override
+  String toString() {
+    return '{date: $date, count: $count}';
+  }
 }
