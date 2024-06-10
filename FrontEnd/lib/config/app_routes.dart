@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
 import 'package:smartpark/providers/activity_provider.dart';
 import 'package:smartpark/providers/auth_provider.dart';
 import 'package:smartpark/providers/parking_provider.dart';
@@ -14,6 +13,7 @@ import 'package:smartpark/views/login_view.dart';
 import 'package:smartpark/views/sign_up_view.dart';
 import 'package:smartpark/views/space_view.dart';
 import 'package:smartpark/views/vehicles_view.dart';
+import 'package:smartpark/views/vehicle_activity_view.dart'; // Importa la nueva vista
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
@@ -60,13 +60,11 @@ class AppRoutes {
         path: ActivityView.routerPath,
         builder: (context, state) => ActivityView(),
       ),
-    ]
+      GoRoute(
+        name: VehicleActivityView.routerName,
+        path: VehicleActivityView.routerPath,
+        builder: (context, state) => VehicleActivityView(),
+      ),
+    ],
   );
-
-  static final List<SingleChildWidget> providers = [
-    ChangeNotifierProvider(create: (_) => AuthProvider()),
-    ChangeNotifierProvider(create: (_) => ParkingProvider()),
-    ChangeNotifierProvider(create: (_) => VehiclesProvider()),
-    ChangeNotifierProvider(create: (_) => ActivityProvider()),
-  ];
 }

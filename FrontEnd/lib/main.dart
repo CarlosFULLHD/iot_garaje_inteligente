@@ -1,15 +1,22 @@
-// lib/main.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartpark/config/app_routes.dart';
+import 'package:smartpark/providers/auth_provider.dart';
+import 'package:smartpark/providers/parking_provider.dart';
+import 'package:smartpark/providers/vehicles_provider.dart';
+import 'package:smartpark/providers/activity_provider.dart';
 
 void main() {
   runApp(
     MultiProvider(
-      providers: AppRoutes.providers,
-      child: const MyApp()
-    )
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ParkingProvider()),
+        ChangeNotifierProvider(create: (_) => VehiclesProvider()),
+        ChangeNotifierProvider(create: (_) => ActivityProvider()),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
