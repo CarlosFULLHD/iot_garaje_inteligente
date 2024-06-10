@@ -6,6 +6,7 @@ import 'package:smartpark/models/parking_model.dart';
 import 'package:smartpark/providers/parking_provider.dart';
 import 'package:smartpark/style/colors.dart';
 import 'package:smartpark/views/login_view.dart';
+import 'package:smartpark/views/activity_view.dart';
 
 class HomeView extends StatelessWidget {
   static const String routerName = 'home';
@@ -80,6 +81,16 @@ class HomeView extends StatelessWidget {
             ListTile(
               title: Text('Mis Vehiculos'),
               onTap: () => parkingProvider.goToVehicle(context),
+            ),
+            ListTile(
+              title: Text('Mi Actividad'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ActivityView()),
+                );
+              },
             ),
             ListTile(
               title: Text('Settings'),

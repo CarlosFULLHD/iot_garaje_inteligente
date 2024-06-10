@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:smartpark/providers/activity_provider.dart';
 import 'package:smartpark/providers/auth_provider.dart';
 import 'package:smartpark/providers/parking_provider.dart';
 import 'package:smartpark/providers/vehicles_provider.dart';
 import 'package:smartpark/views/add_vehicles_view.dart';
+import 'package:smartpark/views/activity_view.dart';
 import 'package:smartpark/views/home_view.dart';
 import 'package:smartpark/views/login_view.dart';
 import 'package:smartpark/views/sign_up_view.dart';
@@ -53,6 +55,11 @@ class AppRoutes {
         path: VehiclesView.routerPath,
         builder: (context, state) => VehiclesView(),
       ),
+      GoRoute(
+        name: ActivityView.routerName,
+        path: ActivityView.routerPath,
+        builder: (context, state) => ActivityView(),
+      ),
     ]
   );
 
@@ -60,5 +67,6 @@ class AppRoutes {
     ChangeNotifierProvider(create: (_) => AuthProvider()),
     ChangeNotifierProvider(create: (_) => ParkingProvider()),
     ChangeNotifierProvider(create: (_) => VehiclesProvider()),
+    ChangeNotifierProvider(create: (_) => ActivityProvider()),
   ];
 }
