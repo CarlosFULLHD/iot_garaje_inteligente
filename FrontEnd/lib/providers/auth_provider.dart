@@ -42,6 +42,12 @@ class AuthProvider with ChangeNotifier {
       context.goNamed(HomeView.routerName);
     }
   }
+  void verifyAuth(BuildContext context) async {
+    String? token = await _storage.read(key: Constants.ssToken);
+    if(token != null) {
+      context.goNamed(HomeView.routerName);
+    }
+  }
 
   void goToSignUp(BuildContext context) {
     context.pushNamed(SignUpView.routerName);

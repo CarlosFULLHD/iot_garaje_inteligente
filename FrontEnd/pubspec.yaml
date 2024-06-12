@@ -46,7 +46,7 @@ dependencies:
   quickalert: ^1.1.0
   collection: ^1.15.0
   charts_flutter:
-    path: C:\Users\ASUS\Documents\GitHub\charts\charts_flutter
+    # path: C:\Users\ASUS\Documents\GitHub\charts\charts_flutter
 
 dev_dependencies:
   flutter_test:
