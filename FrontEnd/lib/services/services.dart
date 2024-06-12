@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:smartpark/models/user_activity_model.dart';
 import 'package:smartpark/utils/constants.dart';
+import 'package:smartpark/utils/globals.dart';
 
 class Services{
   var headerJson = <String, String>{
@@ -126,6 +127,43 @@ class Services{
       }
     } else {
       return Constants.checkInternet;
+    }
+  }
+
+  //Manejo de la actividad del usuario
+
+   Future<List<UserActivityModel>> getUserActivity(String userId) async {
+    String url = '${Globals.url}/users/activity/$userId';
+    print('Solicitando actividad del usuario en: $url');
+    final response = await getHttp(url, 0);
+    if (response is http.Response && response.statusCode == 200) {
+      print('Respuesta recibida: ${response.body}');
+      List<dynamic> jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((activity) => UserActivityModel.fromJson(activity)).toList();
+    } else {
+      print('Error al cargar la actividad del usuario: ${response.body}');
+      throw Exception('Failed to load user activity');
+    }
+  }
+
+  Future<UserActivityModel> getVehicleActivity(String vehicleId) async {
+    String url = '${Globals.url}/vehicles/$vehicleId/stats';
+    final response = await getHttp(url, 0);
+    if (response is http.Response && response.statusCode == 200) {
+      return UserActivityModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load vehicle activity');
+    }
+  }
+
+  Future<List<UserActivityModel>> getUserVehicles(String userId) async {
+    String url = '${Globals.url}/users/$userId/vehicles';
+    final response = await getHttp(url, 0);
+    if (response is http.Response && response.statusCode == 200) {
+      Iterable jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((model) => UserActivityModel.fromJson(model)).toList();
+    } else {
+      throw Exception('Failed to load user vehicles');
     }
   }
 

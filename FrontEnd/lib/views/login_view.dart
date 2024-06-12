@@ -5,7 +5,7 @@ import 'package:smartpark/providers/auth_provider.dart';
 import 'package:smartpark/style/colors.dart';
 import 'package:smartpark/widgets/RotatingLoginCircle.dart';
 import 'package:smartpark/widgets/custom_button.dart';
-import 'package:smartpark/widgets/custom_field.dart';
+import 'package:smartpark/style/custom_field.dart';
 
 class LoginView extends StatelessWidget {
   static const String routerName = 'login';
@@ -34,6 +34,8 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    final ValueNotifier<bool> _obscurePassword = ValueNotifier<bool>(true);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -59,12 +61,24 @@ class LoginView extends StatelessWidget {
                   prefixIcon: const Icon(Icons.email),
                 ),
                 const SizedBox(height: 16),
-                CustomField(
-                  controller: authProvider.passwordController,
-                  hintText: 'Contraseña',
-                  keyboardType: TextInputType.text,
-                  label: 'Contraseña',
-                  prefixIcon: const Icon(Icons.lock),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _obscurePassword,
+                  builder: (context, value, child) {
+                    return CustomField(
+                      controller: authProvider.passwordController,
+                      hintText: 'Contraseña',
+                      keyboardType: TextInputType.text,
+                      label: 'Contraseña',
+                      prefixIcon: const Icon(Icons.lock),
+                      obscureText: value,
+                      suffixIcon: IconButton(
+                        icon: Icon(value ? Icons.visibility : Icons.visibility_off),
+                        onPressed: () {
+                          _obscurePassword.value = !_obscurePassword.value;
+                        },
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 32),
                 CustomButton(
