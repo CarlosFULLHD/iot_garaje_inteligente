@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:smartpark/providers/admin_dashboard_provider.dart';
 import 'package:smartpark/models/spot_stats_model.dart';
 import 'package:smartpark/models/parking_model.dart';
@@ -50,8 +51,11 @@ class _DashboardAdminViewState extends State<DashboardAdminView> {
                     Center(child: Text('Estadísticas de Uso por Spot', style: Theme.of(context).textTheme.headlineSmall)),
                     buildExpansionPanels(parkingStats),
                     SizedBox(height: 16),
-                    Center(child: Text('Gráfica General de Reservas por Spot', style: Theme.of(context).textTheme.headlineSmall)),
-                    // Aquí puedes agregar una gráfica general si es necesario
+                    Center(child: Text('Gráfica General de Reservas por Parqueo', style: Theme.of(context).textTheme.headlineSmall)),
+                    buildGeneralReservationsChart(parkingStats),
+                    SizedBox(height: 16),
+                    Center(child: Text('Gráfica General de Horas Ocupadas por Parqueo', style: Theme.of(context).textTheme.headlineSmall)),
+                    buildGeneralHoursOccupiedChart(parkingStats),
                   ],
                 ),
               ),
@@ -128,4 +132,108 @@ class _DashboardAdminViewState extends State<DashboardAdminView> {
     final int s = totalSeconds % 60;
     return '${h}h ${m}m ${s}s';
   }
+
+  Widget buildGeneralReservationsChart(List<ParkingStatsModel> parkingStats) {
+    final groupedData = _groupReservationsDataByParkingName(parkingStats);
+    final colors = charts.MaterialPalette.getOrderedPalettes(groupedData.length);
+
+    List<charts.Series<SpotReservationsData, String>> series = groupedData.entries.map((entry) {
+      final color = colors[groupedData.keys.toList().indexOf(entry.key)].shadeDefault;
+      return charts.Series<SpotReservationsData, String>(
+        id: entry.key,
+        domainFn: (SpotReservationsData data, _) => data.spot,
+        measureFn: (SpotReservationsData data, _) => data.totalReservations,
+        data: entry.value,
+        colorFn: (_, __) => color,
+      );
+    }).toList();
+
+    return Container(
+      height: 300,
+      child: charts.BarChart(
+        series,
+        animate: true,
+        behaviors: [charts.SeriesLegend(), charts.PanAndZoomBehavior()],
+      ),
+    );
+  }
+
+  Widget buildGeneralHoursOccupiedChart(List<ParkingStatsModel> parkingStats) {
+    final groupedData = _groupHoursDataByParkingName(parkingStats);
+    final colors = charts.MaterialPalette.getOrderedPalettes(groupedData.length);
+
+    List<charts.Series<SpotHoursOccupiedData, String>> series = groupedData.entries.map((entry) {
+      final color = colors[groupedData.keys.toList().indexOf(entry.key)].shadeDefault;
+      return charts.Series<SpotHoursOccupiedData, String>(
+        id: entry.key,
+        domainFn: (SpotHoursOccupiedData data, _) => data.spot,
+        measureFn: (SpotHoursOccupiedData data, _) => data.totalHoursOccupied,
+        data: entry.value,
+        colorFn: (_, __) => color,
+      );
+    }).toList();
+
+    return Container(
+      height: 300,
+      child: charts.BarChart(
+        series,
+        animate: true,
+        behaviors: [charts.SeriesLegend(), charts.PanAndZoomBehavior()],
+      ),
+    );
+  }
+
+  Map<String, List<SpotReservationsData>> _groupReservationsDataByParkingName(List<ParkingStatsModel> parkingStats) {
+    final Map<String, List<SpotReservationsData>> groupedData = {};
+
+    for (var parking in parkingStats) {
+      if (!groupedData.containsKey(parking.parkingName)) {
+        groupedData[parking.parkingName] = [];
+      }
+      groupedData[parking.parkingName]!.addAll(parking.spotUsageStats.map((spotStats) {
+        return SpotReservationsData(
+          'Spot ${parking.spotUsageStats.indexOf(spotStats) + 1}',
+          spotStats.totalReservations,
+        );
+      }).toList());
+    }
+
+    return groupedData;
+  }
+
+  Map<String, List<SpotHoursOccupiedData>> _groupHoursDataByParkingName(List<ParkingStatsModel> parkingStats) {
+    final Map<String, List<SpotHoursOccupiedData>> groupedData = {};
+
+    for (var parking in parkingStats) {
+      if (!groupedData.containsKey(parking.parkingName)) {
+        groupedData[parking.parkingName] = [];
+      }
+      groupedData[parking.parkingName]!.addAll(parking.spotUsageStats.map((spotStats) {
+        return SpotHoursOccupiedData(
+          'Spot ${parking.spotUsageStats.indexOf(spotStats) + 1}',
+          _convertToHours(spotStats.totalHoursOccupied),
+        );
+      }).toList());
+    }
+
+    return groupedData;
+  }
+
+  double _convertToHours(double hours) {
+    return double.parse(hours.toString().split('e')[0]);
+  }
+}
+
+class SpotReservationsData {
+  final String spot;
+  final int totalReservations;
+
+  SpotReservationsData(this.spot, this.totalReservations);
+}
+
+class SpotHoursOccupiedData {
+  final String spot;
+  final double totalHoursOccupied;
+
+  SpotHoursOccupiedData(this.spot, this.totalHoursOccupied);
 }
