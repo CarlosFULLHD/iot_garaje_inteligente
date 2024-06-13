@@ -8,11 +8,11 @@ import 'package:smartpark/models/parking_model.dart';
 import 'package:smartpark/models/reservation_model.dart';
 import 'package:smartpark/models/spots_model.dart';
 import 'package:smartpark/models/vehicles_model.dart';
+import 'package:smartpark/providers/auth_provider.dart';
 import 'package:smartpark/providers/parking_provider.dart';
 import 'package:smartpark/providers/reservation_provider.dart';
 import 'package:smartpark/providers/vehicles_provider.dart';
 import 'package:smartpark/style/colors.dart';
-
 class SpaceView extends StatefulWidget {
   static const String routerName = 'space';
   static const String routerPath = '/space';
@@ -48,7 +48,8 @@ class _SpaceViewState extends State<SpaceView> {
   Widget build(BuildContext context) {
     final parkingProvider = Provider.of<ParkingProvider>(context);
     final reservationProvider = Provider.of<ReservationProvider>(context);
-    
+    final authProvider = Provider.of<AuthProvider>(context);
+
     final vehiclesProvider = Provider.of<VehiclesProvider>(context);
     final ParkingModel parking = widget.argument['parking'] as ParkingModel;
     return SafeArea(
@@ -75,11 +76,7 @@ class _SpaceViewState extends State<SpaceView> {
               final List<SpotsModel> spotsModel = data[0] as List<SpotsModel>;
               final List<VehiclesModel> vehicles = data[1] as List<VehiclesModel>;
 
-              // ordenar sports por id
               spotsModel.sort((a, b) => a.idSpots!.compareTo(b.idSpots!));
-
-
-              
 
               return GridView.builder(
                 shrinkWrap: true,
@@ -163,13 +160,37 @@ class _SpaceViewState extends State<SpaceView> {
                                           child: const Text('Cancelar', style: TextStyle(color: AppColors.dark, fontSize: 18)),
                                         ),
                                         TextButton(
-                                          onPressed:  () async {  
-                                            // llamar al servicio de reservar espacio con los datos seleccionados
-                                              final _storage = const FlutterSecureStorage();
+                                          onPressed: () async {
+                                            final userId = await authProvider.getUserId();
+
+                                            if (userId == null || userId.isEmpty) {
+                                              final snackBar = SnackBar(
+                                                backgroundColor: AppColors.red,
+                                                behavior: SnackBarBehavior.floating,
+                                                content: const Text(
+                                                  'Usuario no autenticado',
+                                                  style: TextStyle(color: Colors.white),
+                                                ),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                              return;
+                                            }
+
+                                            if (selectedVehicle == null || spotsModel[index].idSpots == null) {
+                                              final snackBar = SnackBar(
+                                                backgroundColor: AppColors.red,
+                                                behavior: SnackBarBehavior.floating,
+                                                content: const Text(
+                                                  'Datos incompletos para realizar la reserva',
+                                                  style: TextStyle(color: Colors.white),
+                                                ),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                              return;
+                                            }
+
                                             ReservationModel reservation = ReservationModel(
-                                              
-                                              //userId: int.parse ( await _storage.read(key: 'userId') ?? '0'),
-                                              userId: 2,
+                                              userId: int.parse(userId),
                                               vehicleId: selectedVehicle!.idVehicles,
                                               spotId: spotsModel[index].idSpots,
                                               scheduledEntry: DateTime(
@@ -187,6 +208,7 @@ class _SpaceViewState extends State<SpaceView> {
                                                 selectedExitTime.minute,
                                               ),
                                             );
+
                                             bool isReserved = await reservationProvider.addReservation(reservation);
                                             if (isReserved) {
                                               Navigator.pop(context);
@@ -210,7 +232,6 @@ class _SpaceViewState extends State<SpaceView> {
                                               );
                                               ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                             }
-                                          
                                           },
                                           child: const Text('Reservar', style: TextStyle(color: AppColors.dark, fontSize: 18)),
                                         ),
