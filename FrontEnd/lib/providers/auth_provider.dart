@@ -36,28 +36,35 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void goHome(BuildContext context) async{
+  void goHome(BuildContext context) async {
     AuthModel authModel = await login(emailController.text, passwordController.text);
-    if(authModel.jwt != null){
+    if (authModel.jwt != null) {
       final dataName = await Services().parseJwtPayLoad(authModel.jwt.toString());
       await _storage.write(key: Constants.ssName, value: dataName['name']);
-      // await _storage.write(key: Constants.ssrole, value: dataName['name']);
       await _storage.write(key: Constants.ssUserId, value: dataName['userId'].toString());
       await _storage.write(key: Constants.ssToken, value: authModel.jwt.toString());
       await _storage.write(key: Constants.ssUsername, value: authModel.username.toString());
-      // context.goNamed(HomeView.routerName);
-    
-    // Decodificar el token JWT
-    Map<String, dynamic> decodedToken = JwtDecoder.decode(authModel.jwt.toString());
-    String userId = decodedToken['userId'].toString();
 
-    await _storage.write(key: Constants.ssUserId, value: userId);
-    print('User ID saved: $userId');
-    context.goNamed(HomeView.routerName);
+      // Almacenar el rol del usuario
+      await _storage.write(key: Constants.ssRole, value: dataName['role'].toString());
 
+      // Decodificar el token JWT
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(authModel.jwt.toString());
+      String userId = decodedToken['userId'].toString();
 
+      await _storage.write(key: Constants.ssUserId, value: userId);
+      print('User ID saved: $userId');
+      print('User Role saved: ${dataName['role']}');
+      context.goNamed(HomeView.routerName);
+    }
   }
-}
+
+  Future<String?> getUserRole() async {
+    String? userRole = await _storage.read(key: Constants.ssRole);
+    print('User Role retrieved: $userRole');
+    return userRole;
+  }
+
 
   Future<void> verifyAuth(BuildContext context) async {
     String? token = await _storage.read(key: Constants.ssToken);

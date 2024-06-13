@@ -1,16 +1,16 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:smartpark/models/parking_model.dart';
+import 'package:smartpark/providers/auth_provider.dart';
 import 'package:smartpark/providers/parking_provider.dart';
 import 'package:smartpark/style/colors.dart';
+import 'package:smartpark/utils/constants.dart';
 import 'package:smartpark/views/dashboard_admin_view.dart';
 import 'package:smartpark/views/login_view.dart';
 import 'package:smartpark/views/activity_view.dart';
-import 'package:smartpark/views/vehicle_activity_view.dart'; // Importa la nueva vista
+import 'package:smartpark/views/vehicle_activity_view.dart';
 
 class HomeView extends StatelessWidget {
   static const String routerName = 'home';
@@ -19,6 +19,9 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final parkingProvider = Provider.of<ParkingProvider>(context);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final _storage = const FlutterSecureStorage();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -32,7 +35,6 @@ class HomeView extends StatelessWidget {
               // Ejecutar animación de logout
               await _showLogoutAnimation(context);
               // Redireccionar al login
-              final _storage = const FlutterSecureStorage();
               await _storage.deleteAll();
               context.goNamed(LoginView.routerName);
             },
@@ -68,78 +70,87 @@ class HomeView extends StatelessWidget {
         ),
       ),
       drawer: Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
-              child: Column(
+        child: FutureBuilder<String?>(
+          future: _storage.read(key: Constants.ssName),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError || !snapshot.hasData) {
+              return Center(child: Text('Error al cargar el nombre de usuario'));
+            } else {
+              String userName = snapshot.data ?? 'Usuario';
+              return ListView(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: AppColors.primary,
-                    radius: 50,
-                    child: Icon(Icons.person, size: 50, color: AppColors.white),
-                    
-                  ),
-                  // Nombre de usuario
-                    Text(
-                      parkingProvider.name ?? '',
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 31, 42, 197),
-                        fontSize: 24, // Aumenté el tamaño de la fuente
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic, // Añadí cursiva
-                        shadows: [
-                          Shadow(
-                            blurRadius: 10.0,
-                            color: Colors.black45,
-                            offset: Offset(2.0, 2.0),
+                  DrawerHeader(
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: AppColors.primary,
+                          radius: 50,
+                          child: Icon(Icons.person, size: 50, color: AppColors.white),
+                        ),
+                        // Nombre de usuario
+                        Text(
+                          userName,
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 31, 42, 197),
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 10.0,
+                                color: Colors.black45,
+                                offset: Offset(2.0, 2.0),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  
-                  // Text('User Name'),
+                  ),
+                  ListTile(
+                    title: Text('Mis Vehiculos'),
+                    onTap: () => parkingProvider.goToVehicle(context),
+                  ),
+                  ListTile(
+                    title: Text('Mi Actividad'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ActivityView()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Actividad de Vehículos'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => VehicleActivityView()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Actividad Administrador'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DashboardAdminView()),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Settings'),
+                    onTap: () {},
+                  ),
                 ],
-              ),
-            ),
-            ListTile(
-              title: Text('Mis Vehiculos'),
-              onTap: () => parkingProvider.goToVehicle(context),
-            ),
-            ListTile(
-              title: Text('Mi Actividad'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ActivityView()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Actividad de Vehículos'), // Nueva pestaña para actividad de vehículos
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => VehicleActivityView()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Actividad Administrador'), 
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DashboardAdminView()),
-                );
-              },
-            ),
-            ListTile(
-              title: Text('Settings'),
-              onTap: () {},
-            ),
-          ],
+              );
+            }
+          },
         ),
       ),
     );
@@ -194,7 +205,7 @@ class _RotatingCircleState extends State<RotatingCircle> with SingleTickerProvid
       animation: _controller,
       builder: (context, child) {
         return Transform.rotate(
-          angle: _controller.value * 6.3, // Rotación completa (2*π radianes)
+          angle: _controller.value * 6.3,
           child: Container(
             width: 100,
             height: 100,
