@@ -15,3 +15,11 @@ spring:
     show-sql: true
     database: postgresql
     generate-ddl: true
+
+
+security:
+  jwt:
+    key:
+      private: Rd7yFqUFlUqy4HMNT6HzT0jN9tMRSv9Q
+    user:
+      generator: JWT-IOT_GARAJE

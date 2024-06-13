@@ -1,8 +1,8 @@
+import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartpark/models/user_activity_model.dart';
 import 'package:smartpark/providers/activity_provider.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 class VehicleActivityView extends StatelessWidget {
   static const String routerName = 'vehicle-activity';
