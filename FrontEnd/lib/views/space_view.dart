@@ -168,8 +168,8 @@ class _SpaceViewState extends State<SpaceView> {
                                               final _storage = const FlutterSecureStorage();
                                             ReservationModel reservation = ReservationModel(
                                               
-                                              userId: int.parse ( await _storage.read(key: 'userId') ?? '0'),
-                                              
+                                              //userId: int.parse ( await _storage.read(key: 'userId') ?? '0'),
+                                              userId: 2,
                                               vehicleId: selectedVehicle!.idVehicles,
                                               spotId: spotsModel[index].idSpots,
                                               scheduledEntry: DateTime(
