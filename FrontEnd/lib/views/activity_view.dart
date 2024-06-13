@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:smartpark/models/user_activity_model.dart';
 import 'package:smartpark/providers/activity_provider.dart';
+import 'package:smartpark/providers/auth_provider.dart';
 
 class ActivityView extends StatelessWidget {
   static const String routerName = 'activity';
@@ -11,51 +12,67 @@ class ActivityView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final activityProvider = Provider.of<ActivityProvider>(context, listen: false);
-    final String userId = "1"; // Reemplaza con el ID de usuario real
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Mi Actividad'),
       ),
-      body: FutureBuilder<List<UserActivityModel>>(
-        future: activityProvider.fetchUserActivity(userId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: FutureBuilder<String?>(
+        future: authProvider.getUserId(),
+        builder: (context, userIdSnapshot) {
+          if (userIdSnapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            print('Error en FutureBuilder: ${snapshot.error}');
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No hay datos disponibles'));
+          } else if (userIdSnapshot.hasError) {
+            print('Error en FutureBuilder (userId): ${userIdSnapshot.error}');
+            return Center(child: Text('Error: ${userIdSnapshot.error}'));
+          } else if (!userIdSnapshot.hasData || userIdSnapshot.data == null) {
+            print('User ID is null');
+            return Center(child: Text('No hay usuario autenticado'));
           } else {
-            List<UserActivityModel> activities = snapshot.data!;
-            print("Activities: $activities");
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Center(child: Text('Reservas por Día', style: Theme.of(context).textTheme.headlineSmall)),
-                    Container(
-                      height: 200,
-                      child: BarChartSample(createBarChartData(activities)),
+            final String userId = userIdSnapshot.data!;
+            return FutureBuilder<List<UserActivityModel>>(
+              future: activityProvider.fetchUserActivity(userId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  print('Error en FutureBuilder (fetchUserActivity): ${snapshot.error}');
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No hay datos disponibles'));
+                } else {
+                  List<UserActivityModel> activities = snapshot.data!;
+                  print("Activities: $activities");
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Center(child: Text('Reservas por Día', style: Theme.of(context).textTheme.headlineSmall)),
+                          Container(
+                            height: 200,
+                            child: BarChartSample(createBarChartData(activities)),
+                          ),
+                          SizedBox(height: 16),
+                          Center(child: Text('Proporción de Reservas', style: Theme.of(context).textTheme.headlineSmall)),
+                          buildProportionCards(context, activities),
+                          SizedBox(height: 16),
+                          Center(child: Text('Entradas y Salidas Programadas', style: Theme.of(context).textTheme.headlineSmall)),
+                          Container(
+                            height: 200,
+                            child: LineChartSample(createLineChartData(activities)),
+                          ),
+                          SizedBox(height: 16),
+                          Center(child: Text('Detalles de Reservas', style: Theme.of(context).textTheme.headlineSmall)),
+                          buildDetailCards(context, activities),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 16),
-                    Center(child: Text('Proporción de Reservas', style: Theme.of(context).textTheme.headlineSmall)),
-                    buildProportionCards(context, activities),
-                    SizedBox(height: 16),
-                    Center(child: Text('Entradas y Salidas Programadas', style: Theme.of(context).textTheme.headlineSmall)),
-                    Container(
-                      height: 200,
-                      child: LineChartSample(createLineChartData(activities)),
-                    ),
-                    SizedBox(height: 16),
-                    Center(child: Text('Detalles de Reservas', style: Theme.of(context).textTheme.headlineSmall)),
-                    buildDetailCards(context, activities),
-                  ],
-                ),
-              ),
+                  );
+                }
+              },
             );
           }
         },
@@ -66,7 +83,7 @@ class ActivityView extends StatelessWidget {
   List<charts.Series<Reservation, String>> createBarChartData(List<UserActivityModel> activities) {
     final Map<String, int> dataMap = {};
     for (var activity in activities) {
-      final date = activity.scheduledEntry.split('T')[0];
+      final date = activity.scheduledEntry?.split('T')[0] ?? '';
       if (dataMap.containsKey(date)) {
         dataMap[date] = dataMap[date]! + 1;
       } else {
@@ -154,7 +171,7 @@ class ActivityView extends StatelessWidget {
                 SizedBox(height: 8),
                 Text('Usuario ID: ${activity.userId}'),
                 Text('Vehículo ID: ${activity.vehicleId}'),
-                Text('Spot ID: ${activity.spotId}'),
+                Text('Spot ID: ${activity.spotId ?? 'N/A'}'),
                 Text('Entrada Programada: ${activity.scheduledEntry}'),
                 Text('Salida Programada: ${activity.scheduledExit}'),
                 Text('Entrada Real: ${activity.actualEntry}'),
@@ -173,11 +190,15 @@ class ActivityView extends StatelessWidget {
     final List<ReservationTime> dataActual = [];
 
     for (var activity in activities) {
-      dataScheduled.add(ReservationTime(DateTime.parse(activity.scheduledEntry), 1));
-      dataScheduled.add(ReservationTime(DateTime.parse(activity.scheduledExit), -1));
+      if (activity.scheduledEntry != null) {
+        dataScheduled.add(ReservationTime(DateTime.parse(activity.scheduledEntry!), 1));
+        dataScheduled.add(ReservationTime(DateTime.parse(activity.scheduledExit!), -1));
+      }
 
-      dataActual.add(ReservationTime(DateTime.parse(activity.actualEntry), 1));
-      dataActual.add(ReservationTime(DateTime.parse(activity.actualExit), -1));
+      if (activity.actualEntry != null) {
+        dataActual.add(ReservationTime(DateTime.parse(activity.actualEntry!), 1));
+        dataActual.add(ReservationTime(DateTime.parse(activity.actualExit!), -1));
+      }
     }
 
     print("Line Chart Data (Scheduled): $dataScheduled");

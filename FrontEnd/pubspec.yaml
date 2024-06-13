@@ -45,6 +45,7 @@ dependencies:
   provider: ^6.1.2
   quickalert: ^1.1.0
   collection: ^1.15.0
+  jwt_decoder: ^2.0.1
   charts_flutter:
     path: C:\Users\Natalia\Documents\mis_proyectos\charts\charts_flutter
 

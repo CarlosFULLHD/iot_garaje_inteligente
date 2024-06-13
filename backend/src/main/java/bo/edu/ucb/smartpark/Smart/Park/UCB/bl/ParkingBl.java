@@ -41,7 +41,7 @@ public class ParkingBl {
     }
 
     public List<SpotResponseDto> getSpotsByParkingId(Long parkingId) {
-        List<SpotEntity> spotEntities = spotDao.findByParkingEntity_IdPar(parkingId);
+        List<SpotEntity> spotEntities = spotDao.findByParkingEntity_IdParOrderBySpotNumberAsc(parkingId);
         return spotEntities.stream()
                 .map(this::mapToSpotResponseDto)
                 .collect(Collectors.toList());

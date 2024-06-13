@@ -17,11 +17,11 @@ POST http://localhost:8080/api/v1/parkings/reservations
 Content-Type: application/json
 
 {
-  "userId": 2,
-  "vehicleId": 2,
-  "spotId": 2,
-  "scheduledEntry": "2024-06-12T08:00:00",
-  "scheduledExit": "2024-06-12T10:00:00"
+  "userId": 3,
+  "vehicleId": 3,
+  "spotId": 3,
+  "scheduledEntry": "2024-06-06T08:00:00",
+  "scheduledExit": "2024-06-06T10:00:00"
 }
 
 
