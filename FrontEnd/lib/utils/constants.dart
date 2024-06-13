@@ -6,4 +6,7 @@ class Constants {
   static String ssUsername = 'username';
 
   static String ssName = 'name';
+
+  static String ssUserId = 'userId';
 }
+

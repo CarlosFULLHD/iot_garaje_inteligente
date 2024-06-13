@@ -40,6 +40,8 @@ class AuthProvider with ChangeNotifier {
     if(authModel.jwt != null){
       final dataName = await Services().parseJwtPayLoad(authModel.jwt.toString());
       await _storage.write(key: Constants.ssName, value: dataName['name']);
+      // await _storage.write(key: Constants.ssrole, value: dataName['name']);
+      await _storage.write(key: Constants.ssUserId, value: dataName['userId'].toString());
       await _storage.write(key: Constants.ssToken, value: authModel.jwt.toString());
       await _storage.write(key: Constants.ssUsername, value: authModel.username.toString());
       context.goNamed(HomeView.routerName);

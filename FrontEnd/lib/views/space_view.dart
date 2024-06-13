@@ -1,10 +1,15 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:smartpark/models/parking_model.dart';
+import 'package:smartpark/models/reservation_model.dart';
 import 'package:smartpark/models/spots_model.dart';
 import 'package:smartpark/models/vehicles_model.dart';
 import 'package:smartpark/providers/parking_provider.dart';
+import 'package:smartpark/providers/reservation_provider.dart';
 import 'package:smartpark/providers/vehicles_provider.dart';
 import 'package:smartpark/style/colors.dart';
 
@@ -20,7 +25,7 @@ class SpaceView extends StatefulWidget {
 
 class _SpaceViewState extends State<SpaceView> {
   TimeOfDay selectedEntryTime = TimeOfDay.now();
-  TimeOfDay selectedExitTime = TimeOfDay.now().replacing(hour: TimeOfDay.now().hour + 1);
+  TimeOfDay selectedExitTime = TimeOfDay.now().replacing(minute: TimeOfDay.now().minute + 1);
   VehiclesModel? selectedVehicle;
 
   Future<void> _selectTime(BuildContext context, StateSetter setState, bool isEntryTime) async {
@@ -42,6 +47,8 @@ class _SpaceViewState extends State<SpaceView> {
   @override
   Widget build(BuildContext context) {
     final parkingProvider = Provider.of<ParkingProvider>(context);
+    final reservationProvider = Provider.of<ReservationProvider>(context);
+    
     final vehiclesProvider = Provider.of<VehiclesProvider>(context);
     final ParkingModel parking = widget.argument['parking'] as ParkingModel;
     return SafeArea(
@@ -67,6 +74,12 @@ class _SpaceViewState extends State<SpaceView> {
               final List<dynamic> data = snapshot.data as List<dynamic>;
               final List<SpotsModel> spotsModel = data[0] as List<SpotsModel>;
               final List<VehiclesModel> vehicles = data[1] as List<VehiclesModel>;
+
+              // ordenar sports por id
+              spotsModel.sort((a, b) => a.idSpots!.compareTo(b.idSpots!));
+
+
+              
 
               return GridView.builder(
                 shrinkWrap: true,
@@ -150,9 +163,54 @@ class _SpaceViewState extends State<SpaceView> {
                                           child: const Text('Cancelar', style: TextStyle(color: AppColors.dark, fontSize: 18)),
                                         ),
                                         TextButton(
-                                          onPressed: () {
+                                          onPressed:  () async {  
                                             // llamar al servicio de reservar espacio con los datos seleccionados
-                                            Navigator.pop(context);
+                                              final _storage = const FlutterSecureStorage();
+                                            ReservationModel reservation = ReservationModel(
+                                              
+                                              userId: int.parse ( await _storage.read(key: 'userId') ?? '0'),
+                                              
+                                              vehicleId: selectedVehicle!.idVehicles,
+                                              spotId: spotsModel[index].idSpots,
+                                              scheduledEntry: DateTime(
+                                                DateTime.now().year,
+                                                DateTime.now().month,
+                                                DateTime.now().day,
+                                                selectedEntryTime.hour,
+                                                selectedEntryTime.minute,
+                                              ),
+                                              scheduledExit: DateTime(
+                                                DateTime.now().year,
+                                                DateTime.now().month,
+                                                DateTime.now().day,
+                                                selectedExitTime.hour,
+                                                selectedExitTime.minute,
+                                              ),
+                                            );
+                                            bool isReserved = await reservationProvider.addReservation(reservation);
+                                            if (isReserved) {
+                                              Navigator.pop(context);
+                                              final snackBar = SnackBar(
+                                                backgroundColor: AppColors.green,
+                                                behavior: SnackBarBehavior.floating,
+                                                content: const Text(
+                                                  'Espacio reservado correctamente',
+                                                  style: TextStyle(color: Colors.white),
+                                                ),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                            } else {
+                                              final snackBar = SnackBar(
+                                                backgroundColor: AppColors.red,
+                                                behavior: SnackBarBehavior.floating,
+                                                content: const Text(
+                                                  'Error al reservar espacio',
+                                                  style: TextStyle(color: Colors.white),
+                                                ),
+                                              );
+                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                            }
+                                          
                                           },
                                           child: const Text('Reservar', style: TextStyle(color: AppColors.dark, fontSize: 18)),
                                         ),
