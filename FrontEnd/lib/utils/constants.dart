@@ -4,4 +4,6 @@ class Constants {
 
   static String ssToken = 'token';
   static String ssUsername = 'username';
+
+  static String ssName = 'name';
 }
