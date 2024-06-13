@@ -3,7 +3,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:smartpark/models/parking_model.dart';
-import 'package:smartpark/providers/auth_provider.dart';
 import 'package:smartpark/providers/parking_provider.dart';
 import 'package:smartpark/style/colors.dart';
 import 'package:smartpark/utils/constants.dart';
@@ -19,7 +18,6 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final parkingProvider = Provider.of<ParkingProvider>(context);
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final _storage = const FlutterSecureStorage();
 
     return Scaffold(
@@ -70,40 +68,57 @@ class HomeView extends StatelessWidget {
         ),
       ),
       drawer: Drawer(
-        child: FutureBuilder<String?>(
-          future: _storage.read(key: Constants.ssName),
+        child: FutureBuilder<Map<String, String?>>(
+          future: _getUserInfo(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError || !snapshot.hasData) {
-              return Center(child: Text('Error al cargar el nombre de usuario'));
+              return Center(child: Text('Error al cargar la información del usuario'));
             } else {
-              String userName = snapshot.data ?? 'Usuario';
+              String userName = snapshot.data?['name'] ?? 'Usuario';
+              String userRole = snapshot.data?['role'] ?? 'Rol desconocido';
               return ListView(
                 children: [
                   DrawerHeader(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircleAvatar(
                           backgroundColor: AppColors.primary,
-                          radius: 50,
-                          child: Icon(Icons.person, size: 50, color: AppColors.white),
+                          radius: 40,
+                          child: Icon(Icons.person, size: 40, color: AppColors.white),
                         ),
-                        // Nombre de usuario
-                        Text(
-                          userName,
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 31, 42, 197),
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 10.0,
-                                color: Colors.black45,
-                                offset: Offset(2.0, 2.0),
-                              ),
-                            ],
+                        SizedBox(height: 10),
+                        Flexible(
+                          child: Text(
+                            userName,
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 31, 42, 197),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 10.0,
+                                  color: Colors.black45,
+                                  offset: Offset(2.0, 2.0),
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Flexible(
+                          child: Text(
+                            userRole,
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 16,
+                              fontStyle: FontStyle.italic,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ],
@@ -173,6 +188,13 @@ class HomeView extends StatelessWidget {
 
     // Eliminar el overlay entry
     overlayEntry.remove();
+  }
+
+  Future<Map<String, String?>> _getUserInfo() async {
+    final _storage = const FlutterSecureStorage();
+    String? name = await _storage.read(key: Constants.ssName);
+    String? role = await _storage.read(key: Constants.ssRole);
+    return {'name': name, 'role': role};
   }
 }
 

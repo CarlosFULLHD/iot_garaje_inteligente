@@ -77,7 +77,7 @@ public class ParkingBl {
     }
 
     private ParkingAndSpotsResponseDto mapToDto(ParkingEntity parkingEntity) {
-        List<SpotEntity> spotEntities = spotDao.findByParkingEntity_IdPar(parkingEntity.getIdPar());
+        List<SpotEntity> spotEntities = spotDao.findByParkingEntity_IdParOrderBySpotNumberAsc(parkingEntity.getIdPar());
         List<ParkingAndSpotsResponseDto.SpotDto> spots = spotEntities.stream()
                 .map(this::mapToSpotDto)
                 .collect(Collectors.toList());
@@ -140,7 +140,7 @@ public class ParkingBl {
     }
 
     private ParkingSpotsUsageStats mapToParkingSpotsUsageStats(ParkingEntity parking) {
-        List<SpotEntity> spots = spotDao.findByParkingEntity_IdPar(parking.getIdPar());
+        List<SpotEntity> spots = spotDao.findByParkingEntity_IdParOrderBySpotNumberAsc(parking.getIdPar());
         List<SpotUsageStatsResponse> spotUsageStats = spots.stream().map(this::mapToSpotUsageStats).collect(Collectors.toList());
 
         ParkingSpotsUsageStats stats = new ParkingSpotsUsageStats();
