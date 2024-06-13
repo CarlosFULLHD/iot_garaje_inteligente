@@ -17,11 +17,11 @@ Content-Type: application/json
 
 ### Login:
 
-POST http://localhost:8080/api/v1/users/login
+POST http://172.30.80.1:8080/api/v1/users/login
 Content-Type: application/json
 
 {
-  "username": "carlos.nina123@ucb.edu.bo",
+  "username": "carlos.nina@ucb.edu.bo",
   "password": "12345678"
 }
 
@@ -37,5 +37,4 @@ Content-Type: application/json
 {
 "pin": "1234"
 }
-
 

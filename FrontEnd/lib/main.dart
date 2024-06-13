@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartpark/config/app_routes.dart';
+import 'package:smartpark/providers/admin_dashboard_provider.dart';
 import 'package:smartpark/providers/auth_provider.dart';
 import 'package:smartpark/providers/parking_provider.dart';
 import 'package:smartpark/providers/vehicles_provider.dart';
@@ -14,6 +15,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ParkingProvider()),
         ChangeNotifierProvider(create: (_) => VehiclesProvider()),
         ChangeNotifierProvider(create: (_) => ActivityProvider()),
+        ChangeNotifierProvider(create: (_) => AdminDashboardProvider()),
       ],
       child: const MyApp(),
     ),

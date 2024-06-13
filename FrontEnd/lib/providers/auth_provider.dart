@@ -9,6 +9,10 @@ import 'package:smartpark/utils/constants.dart';
 import 'package:smartpark/views/home_view.dart';
 import 'package:smartpark/views/login_view.dart';
 import 'package:smartpark/views/sign_up_view.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:smartpark/utils/globals.dart';
+import 'package:smartpark/models/auth_model.dart';
 
 class AuthProvider with ChangeNotifier {
   final _storage = const FlutterSecureStorage();
@@ -47,9 +51,42 @@ class AuthProvider with ChangeNotifier {
     context.pushNamed(SignUpView.routerName);
   }
 
-  Future<AuthModel> login(String email, String password) async{
-    return AuthService().login(email, password);
+  Future<AuthModel> login(String email, String password) async {
+    final url = '${Globals.url}/users/login';
+    print('Making request to: $url');
+    print('Request body: ${jsonEncode({
+      'username': email,
+      'password': password,
+    })}');
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'username': email,
+          'password': password,
+        }),
+      );
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return AuthModel.fromJson(jsonDecode(response.body));
+      } else {
+        throw Exception('Failed to login');
+      }
+    } catch (e) {
+      print('Exception occurred: $e');
+      throw e;
+    }
   }
+
+  //Future<AuthModel> login(String email, String password) async{
+  //  return AuthService().login(email, password);
+  //}
 
   void signup(BuildContext context) async {
     if(_currentStep == 0) {

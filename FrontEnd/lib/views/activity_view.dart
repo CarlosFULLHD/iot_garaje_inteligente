@@ -11,7 +11,7 @@ class ActivityView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final activityProvider = Provider.of<ActivityProvider>(context, listen: false);
-    final String userId = "5"; // Reemplaza con el ID de usuario real
+    final String userId = "1"; // Reemplaza con el ID de usuario real
 
     return Scaffold(
       appBar: AppBar(

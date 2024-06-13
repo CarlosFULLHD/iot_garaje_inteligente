@@ -8,6 +8,7 @@ import 'package:smartpark/providers/parking_provider.dart';
 import 'package:smartpark/providers/vehicles_provider.dart';
 import 'package:smartpark/views/add_vehicles_view.dart';
 import 'package:smartpark/views/activity_view.dart';
+import 'package:smartpark/views/dashboard_admin_view.dart';
 import 'package:smartpark/views/home_view.dart';
 import 'package:smartpark/views/login_view.dart';
 import 'package:smartpark/views/sign_up_view.dart';
@@ -64,6 +65,11 @@ class AppRoutes {
         name: VehicleActivityView.routerName,
         path: VehicleActivityView.routerPath,
         builder: (context, state) => VehicleActivityView(),
+      ),
+      GoRoute(
+        name: DashboardAdminView.routerName,
+        path: DashboardAdminView.routerPath,
+        builder: (context, state) => DashboardAdminView(),
       ),
     ],
   );

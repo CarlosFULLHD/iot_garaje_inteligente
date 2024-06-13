@@ -52,7 +52,7 @@ packages:
   charts_flutter:
     dependency: "direct main"
     description:
-      path: "C:\\Users\\ASUS\\Documents\\GitHub\\charts\\charts_flutter"
+      path: "C:\\Users\\Natalia\\Documents\\mis_proyectos\\charts\\charts_flutter"
       relative: false
     source: path
     version: "0.12.0"

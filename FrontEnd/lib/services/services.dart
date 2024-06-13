@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:smartpark/models/spot_stats_model.dart';
 import 'package:smartpark/models/user_activity_model.dart';
 import 'package:smartpark/utils/constants.dart';
 import 'package:smartpark/utils/globals.dart';
@@ -196,5 +197,26 @@ class Services{
         throw Exception('Illegal base64url string!"');
     }
     return utf8.decode(base64Url.decode(output));
+  }
+
+  Future<SpotStatsModel> getSpotStats(String spotId) async {
+    String url = '${Globals.url}/parkings/spots/$spotId/stats';
+    final response = await getHttp(url, 0);
+    if (response is http.Response && response.statusCode == 200) {
+      return SpotStatsModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load spot stats');
+    }
+  }
+
+  Future<List<ParkingStatsModel>> getAllSpotsStats() async {
+    String url = '${Globals.url}/parkings/spots/stats';
+    final response = await getHttp(url, 0);
+    if (response is http.Response && response.statusCode == 200) {
+      Iterable jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((model) => ParkingStatsModel.fromJson(model)).toList();
+    } else {
+      throw Exception('Failed to load all spots stats');
+    }
   }
 }
