@@ -5,13 +5,27 @@ import 'package:smartpark/providers/auth_provider.dart';
 import 'package:smartpark/style/colors.dart';
 import 'package:smartpark/widgets/RotatingLoginCircle.dart';
 import 'package:smartpark/widgets/custom_button.dart';
-import 'package:smartpark/widgets/custom_field.dart';
+import 'package:smartpark/style/custom_field.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   static const String routerName = 'login';
   static const String routerPath = '/';
   const LoginView({super.key});
 
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  @override
+  void initState() {
+    super.initState();
+    // verfivar  que exista la autenticaciopn en el securioty storage;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.verifyAuth(context);
+  
+  
+  }
   Future<void> _showLoginAnimation(BuildContext context) async {
     OverlayEntry overlayEntry = OverlayEntry(
       builder: (context) {
@@ -34,6 +48,8 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    final ValueNotifier<bool> _obscurePassword = ValueNotifier<bool>(true);
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -59,12 +75,24 @@ class LoginView extends StatelessWidget {
                   prefixIcon: const Icon(Icons.email),
                 ),
                 const SizedBox(height: 16),
-                CustomField(
-                  controller: authProvider.passwordController,
-                  hintText: 'Contraseña',
-                  keyboardType: TextInputType.text,
-                  label: 'Contraseña',
-                  prefixIcon: const Icon(Icons.lock),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _obscurePassword,
+                  builder: (context, value, child) {
+                    return CustomField(
+                      controller: authProvider.passwordController,
+                      hintText: 'Contraseña',
+                      keyboardType: TextInputType.text,
+                      label: 'Contraseña',
+                      prefixIcon: const Icon(Icons.lock),
+                      obscureText: value,
+                      suffixIcon: IconButton(
+                        icon: Icon(value ? Icons.visibility : Icons.visibility_off),
+                        onPressed: () {
+                          _obscurePassword.value = !_obscurePassword.value;
+                        },
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 32),
                 CustomButton(
@@ -81,7 +109,7 @@ class LoginView extends StatelessWidget {
                   onTap: () => authProvider.goToSignUp(context),
                   child: RichText(
                     text: TextSpan(
-                      text: '¿No tienes cuenta? ',
+                      text: '¿Aun no tienes cuenta? ',
                       style: const TextStyle(color: AppColors.primary),
                       children: [
                         TextSpan(

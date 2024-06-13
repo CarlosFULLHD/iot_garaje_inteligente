@@ -45,4 +45,6 @@ public class ReservationEntity {
 
     @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime updatedAt;
+
+
 }

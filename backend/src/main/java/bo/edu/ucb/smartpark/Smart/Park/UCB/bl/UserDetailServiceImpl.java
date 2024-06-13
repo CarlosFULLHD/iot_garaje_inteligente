@@ -56,6 +56,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
             if (roleUser.getStatus() == 1) {  // O el valor que represente el estado activo
                 String userRole = roleUser.getRoleEntity().getUserRole();
                 authorityList.add(new SimpleGrantedAuthority("ROLE_" + userRole));
+                LOG.info("Rol asignado: {}", userRole);
                 break;
             }
         }
@@ -94,5 +95,4 @@ public class UserDetailServiceImpl implements UserDetailsService {
         LOG.info("Authentication principal type: {}", authentication.getPrincipal().getClass());
         return authentication;
     }
-
 }

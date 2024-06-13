@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +8,8 @@ import 'package:smartpark/models/parking_model.dart';
 import 'package:smartpark/providers/parking_provider.dart';
 import 'package:smartpark/style/colors.dart';
 import 'package:smartpark/views/login_view.dart';
+import 'package:smartpark/views/activity_view.dart';
+import 'package:smartpark/views/vehicle_activity_view.dart'; // Importa la nueva vista
 
 class HomeView extends StatelessWidget {
   static const String routerName = 'home';
@@ -72,7 +76,26 @@ class HomeView extends StatelessWidget {
                     backgroundColor: AppColors.primary,
                     radius: 50,
                     child: Icon(Icons.person, size: 50, color: AppColors.white),
+                    
                   ),
+                  // Nombre de usuario
+                    Text(
+                      parkingProvider.name ?? '',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 31, 42, 197),
+                        fontSize: 24, // Aumenté el tamaño de la fuente
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic, // Añadí cursiva
+                        shadows: [
+                          Shadow(
+                            blurRadius: 10.0,
+                            color: Colors.black45,
+                            offset: Offset(2.0, 2.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  
                   // Text('User Name'),
                 ],
               ),
@@ -80,6 +103,26 @@ class HomeView extends StatelessWidget {
             ListTile(
               title: Text('Mis Vehiculos'),
               onTap: () => parkingProvider.goToVehicle(context),
+            ),
+            ListTile(
+              title: Text('Mi Actividad'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ActivityView()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Actividad de Vehículos'), // Nueva pestaña para actividad de vehículos
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => VehicleActivityView()),
+                );
+              },
             ),
             ListTile(
               title: Text('Settings'),

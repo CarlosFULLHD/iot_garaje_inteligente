@@ -9,6 +9,8 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.SpotDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ParkingAndSpotsResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpaceStatusUpdateDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpotResponseDto;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.ParkingSpotsUsageStats;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.response.SpotUsageStatsResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -110,4 +112,51 @@ public class ParkingBl {
                 .updatedAt(spotEntity.getUpdatedAt())
                 .build();
     }
+
+
+
+    public SpotUsageStatsResponse getSpotUsageStats(int spotId) {
+        List<ReservationEntity> reservations = reservationDao.findBySpotEntity_IdSpots(spotId);
+        SpotUsageStatsResponse stats = new SpotUsageStatsResponse();
+        stats.setTotalReservations(reservations.size());
+        stats.setTotalHoursOccupied(calculateTotalHoursOccupied(reservations));
+        return stats;
+    }
+
+    private double calculateTotalHoursOccupied(List<ReservationEntity> reservations) {
+        double totalHours = 0;
+        for (ReservationEntity reservation : reservations) {
+            if (reservation.getActualEntry() != null && reservation.getActualExit() != null) {
+                long diffInMillies = Math.abs(reservation.getActualExit().getHour() - reservation.getActualEntry().getHour());
+                double diffInHours = diffInMillies / (1000.0 * 60 * 60);
+                totalHours += diffInHours;
+            }
+        }
+        return totalHours;
+    }
+    public List<ParkingSpotsUsageStats> getAllSpotsUsageStats() {
+        List<ParkingEntity> parkings = parkingDao.findAll();
+        return parkings.stream().map(this::mapToParkingSpotsUsageStats).collect(Collectors.toList());
+    }
+
+    private ParkingSpotsUsageStats mapToParkingSpotsUsageStats(ParkingEntity parking) {
+        List<SpotEntity> spots = spotDao.findByParkingEntity_IdPar(parking.getIdPar());
+        List<SpotUsageStatsResponse> spotUsageStats = spots.stream().map(this::mapToSpotUsageStats).collect(Collectors.toList());
+
+        ParkingSpotsUsageStats stats = new ParkingSpotsUsageStats();
+        stats.setParkingId(parking.getIdPar());
+        stats.setParkingName(parking.getName());
+        stats.setSpotUsageStats(spotUsageStats);
+
+        return stats;
+    }
+
+    private SpotUsageStatsResponse mapToSpotUsageStats(SpotEntity spot) {
+        List<ReservationEntity> reservations = reservationDao.findBySpotEntity_IdSpots(spot.getIdSpots());
+        SpotUsageStatsResponse stats = new SpotUsageStatsResponse();
+        stats.setTotalReservations(reservations.size());
+        stats.setTotalHoursOccupied(calculateTotalHoursOccupied(reservations));
+        return stats;
+    }
+
 }
