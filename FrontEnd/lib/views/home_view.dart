@@ -89,13 +89,13 @@ class HomeView extends StatelessWidget {
                           radius: 40,
                           child: Icon(Icons.person, size: 40, color: AppColors.white),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 9),
                         Flexible(
                           child: Text(
                             userName,
                             style: TextStyle(
                               color: Color.fromARGB(255, 31, 42, 197),
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               fontStyle: FontStyle.italic,
                               shadows: [
@@ -109,13 +109,13 @@ class HomeView extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        SizedBox(height: 4),
+                        SizedBox(height: 1),
                         Flexible(
                           child: Text(
                             userRole,
                             style: TextStyle(
                               color: Colors.black54,
-                              fontSize: 16,
+                              fontSize: 10,
                               fontStyle: FontStyle.italic,
                             ),
                             textAlign: TextAlign.center,
@@ -148,16 +148,17 @@ class HomeView extends StatelessWidget {
                       );
                     },
                   ),
-                  ListTile(
-                    title: Text('Actividad Administrador'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => DashboardAdminView()),
-                      );
-                    },
-                  ),
+                  if (userRole == 'ADMIN') // Mostrar solo si el usuario es ADMIN
+                    ListTile(
+                      title: Text('Actividad Administrador'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => DashboardAdminView()),
+                        );
+                      },
+                    ),
                   ListTile(
                     title: Text('Settings'),
                     onTap: () {},

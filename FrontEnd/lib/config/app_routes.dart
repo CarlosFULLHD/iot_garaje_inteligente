@@ -1,11 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:smartpark/providers/activity_provider.dart';
-import 'package:smartpark/providers/auth_provider.dart';
-import 'package:smartpark/providers/parking_provider.dart';
-import 'package:smartpark/providers/vehicles_provider.dart';
 import 'package:smartpark/views/add_vehicles_view.dart';
 import 'package:smartpark/views/activity_view.dart';
 import 'package:smartpark/views/dashboard_admin_view.dart';

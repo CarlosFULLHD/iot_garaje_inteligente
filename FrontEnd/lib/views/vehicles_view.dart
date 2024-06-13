@@ -14,7 +14,10 @@ class VehiclesView extends StatelessWidget {
     final vehiclesProvider = Provider.of<VehiclesProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis vehiculos', style: TextStyle(color: AppColors.dark, fontSize: 18),),
+        title: const Text(
+          'Mis vehículos',
+          style: TextStyle(color: AppColors.dark, fontSize: 18),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -24,20 +27,25 @@ class VehiclesView extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: FutureBuilder(
+        child: FutureBuilder<List<VehiclesModel>>(
           future: vehiclesProvider.getVehicles(),
           builder: (context, snapshot) {
-            if(snapshot.connectionState == ConnectionState.waiting) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error al cargar los datos'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return Center(child: Text('No hay vehículos disponibles'));
             }
-            final List<VehiclesModel> vehicles = snapshot.data as List<VehiclesModel>;
+
+            final List<VehiclesModel> vehicles = snapshot.data!;
             return ListView.builder(
               itemCount: vehicles.length,
               itemBuilder: (context, index) {
                 return Card(
                   color: AppColors.white,
                   child: ListTile(
-                    title: Text('${vehicles[index].carBranch} ${vehicles[index].carModel}' ?? ''),
+                    title: Text('${vehicles[index].carBranch} ${vehicles[index].carModel}'),
                     subtitle: Text(vehicles[index].licensePlate ?? ''),
                   ),
                 );
@@ -45,7 +53,7 @@ class VehiclesView extends StatelessWidget {
             );
           },
         ),
-      )
+      ),
     );
   }
 }
