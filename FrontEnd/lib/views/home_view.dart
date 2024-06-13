@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
@@ -74,7 +76,26 @@ class HomeView extends StatelessWidget {
                     backgroundColor: AppColors.primary,
                     radius: 50,
                     child: Icon(Icons.person, size: 50, color: AppColors.white),
+                    
                   ),
+                  // Nombre de usuario
+                    Text(
+                      parkingProvider.name ?? '',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 31, 42, 197),
+                        fontSize: 24, // Aumenté el tamaño de la fuente
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic, // Añadí cursiva
+                        shadows: [
+                          Shadow(
+                            blurRadius: 10.0,
+                            color: Colors.black45,
+                            offset: Offset(2.0, 2.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  
                   // Text('User Name'),
                 ],
               ),

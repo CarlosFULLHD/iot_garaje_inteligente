@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:smartpark/models/auth_model.dart';
 import 'package:smartpark/models/register_user_model.dart';
 import 'package:smartpark/services/auth_services.dart';
+import 'package:smartpark/services/services.dart';
 import 'package:smartpark/style/colors.dart';
 import 'package:smartpark/utils/constants.dart';
 import 'package:smartpark/views/home_view.dart';
@@ -38,6 +39,9 @@ class AuthProvider with ChangeNotifier {
   void goHome(BuildContext context) async {
   AuthModel authModel = await login(emailController.text, passwordController.text);
   if (authModel.jwt != null) {
+    // Merge with 2 lines 
+    final dataName = await Services().parseJwtPayLoad(authModel.jwt.toString());
+    await _storage.write(key: Constants.ssName, value: dataName['name']);
     await _storage.write(key: Constants.ssToken, value: authModel.jwt.toString());
     await _storage.write(key: Constants.ssUsername, value: authModel.username.toString());
 
@@ -48,6 +52,7 @@ class AuthProvider with ChangeNotifier {
     await _storage.write(key: Constants.ssUserId, value: userId);
     print('User ID saved: $userId');
     context.goNamed(HomeView.routerName);
+
   }
 }
 
