@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartpark/models/user_activity_model.dart';
 import 'package:smartpark/providers/activity_provider.dart';
+import 'package:smartpark/providers/auth_provider.dart';
 
 class VehicleActivityView extends StatelessWidget {
   static const String routerName = 'vehicle-activity';
@@ -10,46 +11,63 @@ class VehicleActivityView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activityProvider = Provider.of<ActivityProvider>(context);
+    final activityProvider = Provider.of<ActivityProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Actividad de Vehículos'),
       ),
-      body: FutureBuilder<List<UserActivityModel>>(
-        future: activityProvider.fetchUserActivity("5"), // Cambia "userId" por el ID real del usuario
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+      body: FutureBuilder<String?>(
+        future: authProvider.getUserId(), // Obtener el userId desde el AuthProvider
+        builder: (context, userIdSnapshot) {
+          if (userIdSnapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            print('Error en FutureBuilder: ${snapshot.error}');
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No hay datos disponibles'));
+          } else if (userIdSnapshot.hasError) {
+            print('Error en FutureBuilder: ${userIdSnapshot.error}');
+            return Center(child: Text('Error: ${userIdSnapshot.error}'));
+          } else if (!userIdSnapshot.hasData || userIdSnapshot.data == null) {
+            return Center(child: Text('No hay usuario autenticado'));
           } else {
-            List<UserActivityModel> activities = snapshot.data!;
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Center(child: Text('Actividad por Vehículo', style: Theme.of(context).textTheme.headlineSmall)),
-                    Container(
-                      height: 200,
-                      child: BarChartSample(createBarChartData(activities)),
+            final String userId = userIdSnapshot.data!; // Obtener el userId
+            return FutureBuilder<List<UserActivityModel>>(
+              future: activityProvider.fetchUserActivity(userId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  print('Error en FutureBuilder: ${snapshot.error}');
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No hay datos disponibles'));
+                } else {
+                  List<UserActivityModel> activities = snapshot.data!;
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Center(child: Text('Actividad por Vehículo', style: Theme.of(context).textTheme.headlineSmall)),
+                          Container(
+                            height: 200,
+                            child: BarChartSample(createBarChartData(activities)),
+                          ),
+                          SizedBox(height: 16),
+                          Center(child: Text('Tendencia de Uso', style: Theme.of(context).textTheme.headlineSmall)),
+                          Container(
+                            height: 200,
+                            child: LineChartSample(createLineChartData(activities)),
+                          ),
+                          SizedBox(height: 16),
+                          Center(child: Text('Detalles de Actividad', style: Theme.of(context).textTheme.headlineSmall)),
+                          buildDetailCards(context, activities),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 16),
-                    Center(child: Text('Tendencia de Uso', style: Theme.of(context).textTheme.headlineSmall)),
-                    Container(
-                      height: 200,
-                      child: LineChartSample(createLineChartData(activities)),
-                    ),
-                    SizedBox(height: 16),
-                    Center(child: Text('Detalles de Actividad', style: Theme.of(context).textTheme.headlineSmall)),
-                    buildDetailCards(context, activities),
-                  ],
-                ),
-              ),
+                  );
+                }
+              },
             );
           }
         },
@@ -60,7 +78,7 @@ class VehicleActivityView extends StatelessWidget {
   List<charts.Series<Reservation, String>> createBarChartData(List<UserActivityModel> activities) {
     final Map<String, int> dataMap = {};
     for (var activity in activities) {
-      final date = activity.scheduledEntry.split('T')[0];
+      final date = activity.scheduledEntry?.split('T')[0] ?? '';
       if (dataMap.containsKey(date)) {
         dataMap[date] = dataMap[date]! + 1;
       } else {
@@ -85,7 +103,7 @@ class VehicleActivityView extends StatelessWidget {
     final List<ReservationTime> data = [];
 
     for (var activity in activities) {
-      final date = DateTime.parse(activity.scheduledEntry);
+      final date = activity.scheduledEntry != null ? DateTime.parse(activity.scheduledEntry!) : DateTime.now();
       data.add(ReservationTime(date, 1));
     }
 
@@ -168,6 +186,11 @@ class Reservation {
   final int count;
 
   Reservation(this.date, this.count);
+
+  @override
+  String toString() {
+    return '{date: $date, count: $count}';
+  }
 }
 
 class ReservationTime {

@@ -45,8 +45,9 @@ dependencies:
   provider: ^6.1.2
   quickalert: ^1.1.0
   collection: ^1.15.0
+  jwt_decoder: ^2.0.1
   charts_flutter:
-    # path: C:\Users\ASUS\Documents\GitHub\charts\charts_flutter
+    #path: C:\Users\ASUS\Documents\GitHub\charts\charts_flutter
 
 dev_dependencies:
   flutter_test:
