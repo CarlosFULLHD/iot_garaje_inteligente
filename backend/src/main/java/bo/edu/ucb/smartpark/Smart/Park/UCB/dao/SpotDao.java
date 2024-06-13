@@ -10,4 +10,6 @@ public interface SpotDao extends JpaRepository<SpotEntity, Long> {
 
     // Agregar ordenación por número de espacio en orden ascendente
     List<SpotEntity> findByParkingEntity_IdParOrderBySpotNumberAsc(Long parkingId);
+
+
 }
