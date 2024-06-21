@@ -1,13 +1,12 @@
-# application.yml
 server:
-  address: 0.0.0.0
+  address: 0.0.0.0 # Esto asegurará que el servidor escuche en todas las interfaces de red
   port: 8080
 
 spring:
   datasource:
-    url: jdbc:postgresql://aws-0-sa-east-1.pooler.supabase.com:6543/postgres
-    username: postgres.vxhygzmdcspljvvkawky
-    password: zIqfZurS0TmYknkL
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: admin
+    password: 12345
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -16,6 +15,7 @@ spring:
     show-sql: true
     database: postgresql
     generate-ddl: true
+
 
 security:
   jwt:
