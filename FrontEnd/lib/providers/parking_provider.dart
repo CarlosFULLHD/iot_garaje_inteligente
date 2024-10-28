@@ -8,41 +8,34 @@ import 'package:smartpark/utils/constants.dart';
 import 'package:smartpark/views/space_view.dart';
 import 'package:smartpark/views/vehicles_view.dart';
 
-class ParkingProvider extends ChangeNotifier {
-  ParkingProvider() {
-    getName();
-  }
 
- String? _name;
-  String? get name => _name;
-  set name(String? value) {
-    _name = value;
+class ParkingProvider with ChangeNotifier {
+  List<Spot> leftSpots = [];
+  List<Spot> rightSpots = [];
+  bool isLoading = false;
+
+  Future<void> loadSpots(int parkingId) async {
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      final spotsData = await ParkingService.fetchGroupedSpots(parkingId);
+      leftSpots = spotsData['leftSpots']!;
+      rightSpots = spotsData['rightSpots']!;
+    } catch (error) {
+      print('Error al cargar los espacios: $error');
+    }
+
+    isLoading = false;
     notifyListeners();
   }
 
-  void getName() {
-    // securitystorage
-    final _storage = const FlutterSecureStorage();
-    _storage.read(key: Constants.ssName).then((value) {
-      _name = value;
-    });
-  
-  }
-  get vehicles => null;
-
-  Future<List<ParkingModel>> getParkings() async {
-    return ParkingService().getParkings();
-  }
-
-  Future<List<SpotsModel>> getParkingsById(parkingId) async {
-    return ParkingService().getParkingsById(parkingId);
-  }
-
-  void goToVehicle(BuildContext context) {
-    context.pushNamed(VehiclesView.routerName);
-  }
-
-  void goSpaces(BuildContext context, ParkingModel parking) {
-    context.pushNamed(SpaceView.routerName, extra: {'parking': parking});
+  Future<void> makeReservation(int spotId) async {
+    try {
+      await ParkingService.makeReservation(spotId);
+      notifyListeners();
+    } catch (error) {
+      print('Error al hacer la reserva: $error');
+    }
   }
 }

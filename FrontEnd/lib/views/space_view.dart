@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -48,9 +46,9 @@ class _SpaceViewState extends State<SpaceView> {
   Widget build(BuildContext context) {
     final parkingProvider = Provider.of<ParkingProvider>(context);
     final reservationProvider = Provider.of<ReservationProvider>(context);
-    
     final vehiclesProvider = Provider.of<VehiclesProvider>(context);
     final ParkingModel parking = widget.argument['parking'] as ParkingModel;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -71,177 +69,170 @@ class _SpaceViewState extends State<SpaceView> {
               if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               }
-              final List<dynamic> data = snapshot.data as List<dynamic>;
-              final List<SpotsModel> spotsModel = data[0] as List<SpotsModel>;
-              final List<VehiclesModel> vehicles = data[1] as List<VehiclesModel>;
-
-              // ordenar sports por id
-              spotsModel.sort((a, b) => a.idSpots!.compareTo(b.idSpots!));
-
-
               
+              final List<SpotsModel> leftSpots = parkingProvider.leftSpots;
+              final List<SpotsModel> rightSpots = parkingProvider.rightSpots;
+              final List<VehiclesModel> vehicles = snapshot.data![1] as List<VehiclesModel>;
 
-              return GridView.builder(
-                shrinkWrap: true,
-                primary: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 120,
-                  mainAxisSpacing: 4,
-                  mainAxisExtent: 110,
-                ),
-                itemCount: spotsModel.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: spotsModel[index].status == 1
-                        ? () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return StatefulBuilder(
-                                  builder: (context, setState) {
-                                    return AlertDialog(
-                                      title: const Text('¿Desea reservar este espacio?'),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SvgPicture.asset('assets/images/car.svg', color: AppColors.green, width: 50),
-                                          Text('Espacio ${spotsModel[index].spotNumber}', style: const TextStyle(color: AppColors.dark, fontSize: 18)),
-                                          Text('Disponible', style: const TextStyle(color: AppColors.dark, fontSize: 18)),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Hora de entrada: ${selectedEntryTime.format(context)}',
-                                                style: const TextStyle(color: AppColors.dark, fontSize: 18),
-                                              ),
-                                              IconButton(
-                                                icon: Icon(Icons.access_time, color: AppColors.dark),
-                                                onPressed: () {
-                                                  _selectTime(context, setState, true);
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                'Hora de salida: ${selectedExitTime.format(context)}',
-                                                style: const TextStyle(color: AppColors.dark, fontSize: 18),
-                                              ),
-                                              IconButton(
-                                                icon: Icon(Icons.access_time, color: AppColors.dark),
-                                                onPressed: () {
-                                                  _selectTime(context, setState, false);
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                          DropdownButton<VehiclesModel>(
-                                            value: selectedVehicle,
-                                            hint: const Text('Seleccione un vehículo'),
-                                            items: vehicles.map((VehiclesModel vehicle) {
-                                              return DropdownMenuItem<VehiclesModel>(
-                                                value: vehicle,
-                                                child: Text('${vehicle.carBranch} ${vehicle.carModel} - ${vehicle.licensePlate}'),
-                                              );
-                                            }).toList(),
-                                            onChanged: (VehiclesModel? newValue) {
-                                              setState(() {
-                                                selectedVehicle = newValue;
-                                              });
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text('Cancelar', style: TextStyle(color: AppColors.dark, fontSize: 18)),
+              Widget buildSpotList(List<SpotsModel> spots) {
+                return GridView.builder(
+                  shrinkWrap: true,
+                  primary: false,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 1,
+                    mainAxisSpacing: 4,
+                    mainAxisExtent: 110,
+                  ),
+                  itemCount: spots.length,
+                  itemBuilder: (context, index) {
+                    final spot = spots[index];
+                    return GestureDetector(
+                      onTap: spot.status == 1
+                          ? () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return StatefulBuilder(
+                                    builder: (context, setState) {
+                                      return AlertDialog(
+                                        title: const Text('¿Desea reservar este espacio?'),
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            SvgPicture.asset('assets/images/car.svg', color: AppColors.green, width: 50),
+                                            Text('Espacio ${spot.spotNumber}', style: const TextStyle(color: AppColors.dark, fontSize: 18)),
+                                            Text('Disponible', style: const TextStyle(color: AppColors.dark, fontSize: 18)),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'Hora de entrada: ${selectedEntryTime.format(context)}',
+                                                  style: const TextStyle(color: AppColors.dark, fontSize: 18),
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(Icons.access_time, color: AppColors.dark),
+                                                  onPressed: () {
+                                                    _selectTime(context, setState, true);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  'Hora de salida: ${selectedExitTime.format(context)}',
+                                                  style: const TextStyle(color: AppColors.dark, fontSize: 18),
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(Icons.access_time, color: AppColors.dark),
+                                                  onPressed: () {
+                                                    _selectTime(context, setState, false);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                            DropdownButton<VehiclesModel>(
+                                              value: selectedVehicle,
+                                              hint: const Text('Seleccione un vehículo'),
+                                              items: vehicles.map((VehiclesModel vehicle) {
+                                                return DropdownMenuItem<VehiclesModel>(
+                                                  value: vehicle,
+                                                  child: Text('${vehicle.carBranch} ${vehicle.carModel} - ${vehicle.licensePlate}'),
+                                                );
+                                              }).toList(),
+                                              onChanged: (VehiclesModel? newValue) {
+                                                setState(() {
+                                                  selectedVehicle = newValue;
+                                                });
+                                              },
+                                            ),
+                                          ],
                                         ),
-                                        TextButton(
-                                          onPressed:  () async {  
-                                            // llamar al servicio de reservar espacio con los datos seleccionados
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Cancelar', style: TextStyle(color: AppColors.dark, fontSize: 18)),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
                                               final _storage = const FlutterSecureStorage();
-                                            ReservationModel reservation = ReservationModel(
-                                              
-                                              userId: int.parse ( await _storage.read(key: 'userId') ?? '0'),
-                                              
-                                              vehicleId: selectedVehicle!.idVehicles,
-                                              spotId: spotsModel[index].idSpots,
-                                              scheduledEntry: DateTime(
-                                                DateTime.now().year,
-                                                DateTime.now().month,
-                                                DateTime.now().day,
-                                                selectedEntryTime.hour,
-                                                selectedEntryTime.minute,
-                                              ),
-                                              scheduledExit: DateTime(
-                                                DateTime.now().year,
-                                                DateTime.now().month,
-                                                DateTime.now().day,
-                                                selectedExitTime.hour,
-                                                selectedExitTime.minute,
-                                              ),
-                                            );
-                                            bool isReserved = await reservationProvider.addReservation(reservation);
-                                            if (isReserved) {
+                                              ReservationModel reservation = ReservationModel(
+                                                userId: int.parse(await _storage.read(key: 'userId') ?? '0'),
+                                                vehicleId: selectedVehicle!.idVehicles,
+                                                spotId: spot.idSpots,
+                                                scheduledEntry: DateTime(
+                                                  DateTime.now().year,
+                                                  DateTime.now().month,
+                                                  DateTime.now().day,
+                                                  selectedEntryTime.hour,
+                                                  selectedEntryTime.minute,
+                                                ),
+                                                scheduledExit: DateTime(
+                                                  DateTime.now().year,
+                                                  DateTime.now().month,
+                                                  DateTime.now().day,
+                                                  selectedExitTime.hour,
+                                                  selectedExitTime.minute,
+                                                ),
+                                              );
+                                              bool isReserved = await reservationProvider.addReservation(reservation);
                                               Navigator.pop(context);
                                               final snackBar = SnackBar(
-                                                backgroundColor: AppColors.green,
-                                                behavior: SnackBarBehavior.floating,
-                                                content: const Text(
-                                                  'Espacio reservado correctamente',
-                                                  style: TextStyle(color: Colors.white),
+                                                backgroundColor: isReserved ? AppColors.green : AppColors.red,
+                                                content: Text(
+                                                  isReserved ? 'Espacio reservado correctamente' : 'Error al reservar espacio',
+                                                  style: const TextStyle(color: Colors.white),
                                                 ),
                                               );
                                               ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                            } else {
-                                              final snackBar = SnackBar(
-                                                backgroundColor: AppColors.red,
-                                                behavior: SnackBarBehavior.floating,
-                                                content: const Text(
-                                                  'Error al reservar espacio',
-                                                  style: TextStyle(color: Colors.white),
-                                                ),
-                                              );
-                                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                            }
-                                          
-                                          },
-                                          child: const Text('Reservar', style: TextStyle(color: AppColors.dark, fontSize: 18)),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          }
-                        : null,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.primary, width: 2),
-                      ),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Transform(
-                              alignment: FractionalOffset.center,
-                              transform: Matrix4.identity()..rotateZ(90 * 3.1415927 / 180),
-                              child: SvgPicture.asset('assets/images/car.svg', color: spotsModel[index].status == 1 ? AppColors.green : spotsModel[index].status == 2 ? Colors.yellow.withOpacity(0.8) : AppColors.red, width: 50),
-                            ),
-                            Text(parking.spots![index].spotNumber.toString(), style: const TextStyle(color: AppColors.dark, fontSize: 14)),
-                          ],
+                                            },
+                                            child: const Text('Reservar', style: TextStyle(color: AppColors.dark, fontSize: 18)),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          : null,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: AppColors.primary, width: 2),
+                        ),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              Transform(
+                                alignment: FractionalOffset.center,
+                                transform: Matrix4.identity()..rotateZ(90 * 3.1415927 / 180),
+                                child: SvgPicture.asset(
+                                  'assets/images/car.svg',
+                                  color: spot.status == 1 ? AppColors.green : spot.status == 2 ? Colors.yellow.withOpacity(0.8) : AppColors.red,
+                                  width: 50,
+                                ),
+                              ),
+                              Text(spot.spotNumber.toString(), style: const TextStyle(color: AppColors.dark, fontSize: 14)),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                );
+              }
+
+              // Organizar en columnas para mostrar leftSpots a la izquierda y rightSpots a la derecha
+              return Row(
+                children: [
+                  Expanded(child: buildSpotList(leftSpots)),
+                  const SizedBox(width: 16),
+                  Expanded(child: buildSpotList(rightSpots)),
+                ],
               );
             },
           ),
