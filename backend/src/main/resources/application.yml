@@ -4,7 +4,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/postgres
+    url: jdbc:postgresql://localhost:5433/smartpark_db
     username: admin
     password: 12345
     driver-class-name: org.postgresql.Driver

@@ -6,6 +6,7 @@ import bo.edu.ucb.smartpark.Smart.Park.UCB.Entity.SpotEntity;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.ParkingDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.ReservationDao;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dao.SpotDao;
+import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.GroupedSpotsDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.ParkingAndSpotsResponseDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpaceStatusUpdateDto;
 import bo.edu.ucb.smartpark.Smart.Park.UCB.dto.SpotResponseDto;
@@ -32,6 +33,33 @@ public class ParkingBl {
         this.spotDao = spotDao;
         this.reservationDao = reservationDao;
     }
+
+    public GroupedSpotsDto getSpotsGrouped(Long parkingId) {
+        LOG.info("Obteniendo spots para el parking ID: {}", parkingId);
+
+        // Ejecutar consulta para obtener los primeros 10 spots y limitar los resultados
+        List<SpotEntity> leftEntities = spotDao.findFirst10ByParkingId(parkingId)
+                .stream().limit(10)
+                .collect(Collectors.toList());
+        LOG.info("Left Spot Entities (primeros 10): {}", leftEntities);
+
+        // Ejecutar consulta para obtener los siguientes 6 spots y limitar los resultados
+        List<SpotEntity> rightEntities = spotDao.findNext6ByParkingId(parkingId)
+                .stream().skip(10).limit(6)
+                .collect(Collectors.toList());
+        LOG.info("Right Spot Entities (siguientes 6): {}", rightEntities);
+
+        List<SpotResponseDto> leftSpots = leftEntities.stream()
+                .map(this::mapToSpotResponseDto)
+                .collect(Collectors.toList());
+
+        List<SpotResponseDto> rightSpots = rightEntities.stream()
+                .map(this::mapToSpotResponseDto)
+                .collect(Collectors.toList());
+
+        return new GroupedSpotsDto(leftSpots, rightSpots);
+    }
+
 
     public List<ParkingAndSpotsResponseDto> getAllParkingsWithSpots() {
         List<ParkingEntity> parkingEntities = parkingDao.findAll();

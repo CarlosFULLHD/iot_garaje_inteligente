@@ -29,6 +29,12 @@ public class ParkingApi {
         this.reservationBl = reservationBl;
     }
 
+    @GetMapping("/{parkingId}/groupedSpots")
+    public ResponseEntity<GroupedSpotsDto> getGroupedSpots(@PathVariable Long parkingId) {
+        GroupedSpotsDto spots = parkingBl.getSpotsGrouped(parkingId);
+        return ResponseEntity.ok(spots);
+    }
+
     //Listar todos los parqueo con informacion de sus spots
     @GetMapping
     public ResponseEntity<List<ParkingAndSpotsResponseDto>> getAllParkingsWithSpots() {
